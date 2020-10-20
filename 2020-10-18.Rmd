@@ -1,0 +1,317 @@
+---
+title: "課堂練習模版"
+author: "phias"
+date: "2020-10-18"
+output: output_format
+params:
+  id: "410674270"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+
+# input time # human tells computer
+```{r}
+tpeTime <- ymd_hms("2020-03-18 13:52:40",
+        tz="Asia/Taipei")
+pgTime <- mdy_hms("Mar.18, 2020, 05:52:40",
+                  tz="Europe/Lisbon")
+```
+
+
+```{r}
+tpeTimeVector <- 
+  ymd_hms(
+    # 時間
+    c("2020-03-18 13:52:40",
+      "2020-03-11 03:12:40"),
+    # 時區
+    tz="Asia/Taipei"
+    )
+```
+
+#自UTC不需設定時區
+```{r}
+ymd_hms(
+c("2020-03-18 13:52:40","2020-03-11 03:12:40")
+)
+```
+
+# 格式中可辨別時區
+```{r}
+ymd_hms("2020-03-11T06:56:17Z")
+```
+
+```{r}
+typeof(tpeTime)
+class(tpeTime)
+```
+
+# tpeTime = print(tpeTime)
+# cat()呼叫記憶體中儲存方式
+# 時間儲存參考點1970.01.01 00:00:00
+```{r}
+tpeTime
+print(tpeTime)
+cat(tpeTime)
+```
+# 時間的儲存型態為數字可以as.numeric()呼叫出儲存方式
+```{r}
+as.numeric(tpeTime)
+```
+
+# 時間直接文字呈現
+```{r}
+print(as.character(tpeTime))
+cat(as.character(tpeTime))
+```
+
+## let computer tell us time
+
+# human tells computer
+```{r}
+tpeTime2 <- ymd_hms("2010-03-18 16:52:40",
+        tz="Asia/Taipei")
+pgTime2 <- mdy_hms("Mar.01, 2020, 03:52:40",
+                  tz="Europe/Lisbon")
+```
+# computer tells human # 時區轉換
+```{r}
+tpeTime3 <- 
+  with_tz(tpeTime2, tzone="America/New_York")
+
+typeof(tpeTime3)
+class(tpeTime3)
+print(tpeTime2)
+print(tpeTime3)
+cat(tpeTime2)
+cat(tpeTime3)
+```
+
+```{r}
+pgTime3 <- 
+  with_tz(pgTime2, tzone="America/New_York")
+
+print(pgTime2)
+print(pgTime3)
+```
+```{r}
+pgTime2 - tpeTime2
+```
+
+## pass around
+```{r}
+# Pass data as it is (Not good), not a character
+tpeTime
+
+# Method 1: convert to UTC and pass as character
+tpeTime_utc <- with_tz(tpeTime, tzone="UTC")
+as.character(tpeTime_utc)
+
+# Method 2: pass as a character that fits ISO8601 date time description standard with tz onset specified
+tpeTime_iso8601 <- format_ISO8601(tpeTime, 
+                  # 使用時區＝是
+                  usetz=T)
+tpeTime_iso8601
+tpeTime <- ymd_hms(tpeTime_iso8601)
+```
+
+## list #every element is able to be different types
+```{r}
+# Date/Time class
+purchasingTime <- 
+  ymd_hms("2020-03-31T13:40:55Z")
+
+# character
+location <- "一芳"
+item <- "水果茶"
+
+# numeric
+quantity <- 2
+
+mingsPurchase <-
+  list(
+    purchasingTime, 
+    location, 
+    quantity, 
+    item
+  )
+print(mingsPurchase)
+```
+
+
+```{r}
+mingsPurchase2 <-
+  list(
+    time = purchasingTime,
+    'location' = location,
+    "quantity" = quantity,
+    `item name` = item
+  )
+print(mingsPurchase2)
+```
+
+```{r}
+# 「**2杯**」「**水果茶**」
+item1 <- list(
+  quantity=2,
+  `item name`="水果茶"
+)
+# 「**1杯**」「**日月紅茶**」
+item2 <- list(
+  quantity=1,
+  `item name`="日月紅茶"
+)
+
+mingsPurchase3 <-
+  list(
+    time = purchasingTime,
+    location = location,
+    items=list(
+      item1,
+      item2
+    )
+  )
+
+print(mingsPurchase3)
+```
+
+```{r}
+student1 <-
+  list(
+    name = character(),
+    id = character(),
+    gmail = character(),
+    googleClassroom =
+      list(
+        displayName = character()
+      ),
+    github =
+      list(
+        username = character(),
+        repoUrl = character()
+      ),
+    homeworks = list(),
+    exams = list(),
+    list()
+  )
+
+names(student1) # 每個元素名稱
+length(student1) # 元素個數
+str(student1, 2) # 第一層基本元素架構
+```
+
+
+```{r}
+hw1 <- list(
+  date=ymd("2020-10-21"),
+  grade=10
+)
+exam1 <- list(
+  date=ymd("2020-10-28"),
+  grade=50
+)
+student1 <-
+  list(
+    name = "Martin",
+    id = "007",
+    gmail = "mt@gm.ntpu.edu.tw",
+    googleClassroom =
+      list(
+        displayName = "MT L"
+      ),
+    github =
+      list(
+        username = "tpemartin",
+        repoUrl = "https://github.com/tpemartin/109-1-inclass-practice"
+      ),
+    homeworks = list(
+      hw1
+    ),
+    exams = list(
+      exam1
+    ),
+    list()
+  )
+
+str(student1, 2)
+```
+
+```{r}
+categoryTemplate = 
+  list(
+    categoryName=character(),
+    items = list(
+    )
+  )
+
+saladcat <- 
+  list(
+    categoryName="沙拉套餐",
+    items = list(
+      list(
+        "板煎雞腿排經典凱薩沙拉", 203
+      ),
+      list(
+        "炙燒鴨胸佐胡麻沙拉",
+        203
+      ),
+      list(
+        "煙燻鮭魚佐酒醋沙拉",
+        203
+      )
+    )
+  )
+print(saladcat)
+```
+# r轉json
+```{r}
+library(jsonlite) # 不少同學這行會有Error，還記得如何排除嗎？
+toJSON(mingsPurchase3)
+```
+
+# save obect
+```{r}
+object1 <- c(2,5)
+object2 <- ymd_hms(
+  c("2015-03-22 12:28:42","2017-12-22 15:33:48"),
+  tz="Asia/Taipei"
+)
+object3 <- list(2, FALSE, c("a","b","c"))
+save(object1, object2, object3, file="threeObjects.Rda")
+```
+# load saved object
+```{r}
+load("threeObjects.Rda")
+```
+
+# practice
+```{r}
+browseURL("https://docs.google.com/spreadsheets/d/1EAG49qDKPWWi0ebkVr29TLrvVnoBPfkvxYY-J3xLAHY/edit#gid=458686645")
+
+jaaccyycommit <- 
+  list(
+    studentName="jaaccyy",
+    items = list(
+      list(
+        "created_at", ymd_hms("2020-03-04T06:44:31Z")
+      ),
+      list(
+        "firtCommit", ymd_hms("2020-03-11 14:11:16", tz="Asia/Taipei")
+      ),
+      list(
+        "lastCommit", ymd_hms("2020-03-11 14:25:32", tz="Asia/Taipei")
+      )
+    )
+  )
+print(jaaccyycommit)
+```
+
+```{r}
+
+print(jaaccyycommit)
+```
+
