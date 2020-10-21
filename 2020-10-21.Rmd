@@ -1,0 +1,20 @@
+---
+title: "課堂練習模版"
+author: "phias"
+date: "2020-10-21"
+output: output_format
+params:
+  id: "410674270"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+
+```{r}
+library(econDS)
+
+```
+
