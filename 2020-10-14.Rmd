@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 "\u0928\u092e\u0938\u094d\u0924\u0947 \u0926\u0941\u0928\u093f\u092f\u093e"
 ```
 
-
+# typeof()呼叫記憶體中的儲存型態
 ```{r}
 num <- c(1.5, 2, 3)
 int <- c(1L, 3L, -2L)
@@ -29,7 +29,8 @@ typeof(int)
 typeof(char)
 typeof(logi)
 ```
-##character
+## character
+# class()呼叫以螢幕顯示與可操作為分類出的型態
 ```{r}
 # 10位學生的主系
 majors10_char <- c('經濟學系','社會學系','社會學系','經濟學系','經濟學系','社會學系','經濟學系','經濟學系','經濟學系','社會學系')
@@ -63,6 +64,7 @@ as.integer(majors10_factor)
 ```{r}
 a <- factor(c("一","二","三"))
 a
+as.integer(a)
 ```
 
 ```{r}
