@@ -112,8 +112,11 @@ exampleList$courses$grade 可以取出exampleList底下的courses元素值之再
 ```{r ans12}
 # Game5Time
 Game5Time <- list(
+  # Date
   NBA1920Final567$Game5$Date,
+  # StartTime
   NBA1920Final567$Game5$StartTime,
+  # TimeZone
   NBA1920Final567$Game5$TimeZone
 )
 
@@ -137,8 +140,23 @@ b[[1]]
 
 ```{r ans13}
 # G5TimeParsed
-G5TimeParsed <- paste0(Game5Time[[1]], " ", "2020", " ", Game5Time[[2]])
+
+# 黏合時間資訊
+G5Time <- 
+  paste0(Game5Time[[1]], " 2020 ", Game5Time[[2]]) 
+# 確認輸出內容
+print(G5Time) 
+# 確認資料型態
+class(G5Time) 
+# 文字轉時間資料型態
+G5TimeParsed <- 
+  mdy_hm(G5Time, tz="America/New_York")  
+# 確認輸出內容
+print(G5TimeParsed)
+# 確認資料型態
 class(G5TimeParsed)
+
+
 ```
 
 ### 1.4 Time Stamp
@@ -149,8 +167,12 @@ class(G5TimeParsed)
 
 ```{r ans14}
 # TpeJason
-NyAllen <- mdy_hm(G5TimeParsed, tz="America/New_York")
-TpeJason <- with_tz(NyAllen, tz="Asia/Taipei")
+
+# Allen的時間
+NyAllen <- G5TimeParsed 
+# 轉換到Jason的時區
+TpeJason <- with_tz(NyAllen, tz="Asia/Taipei") 
+# 確認輸出內容
 TpeJason
 ```
 
@@ -160,10 +182,15 @@ Louis臨時被要求整理財報資料，而在比賽開始後的15分鐘出現�
 
 ```{r ans15}
 # ParisLouis
-timelethgth <- minutes(15)
-LaterTime <- as.POSIXlt.numeric(timelethgth, tz="America/New_York", NyAllen)
-LaterTime
+
+# 經過的時間長度
+timelethgth <- minutes(15) 
+# Allen發訊息的時間加上經過的時間長度
+LaterTime <- 
+  as.POSIXlt.numeric(timelethgth, tz="America/New_York", NyAllen) 
+# 轉換到Louis的時區
 ParisLouis <- with_tz(LaterTime, tz="Europe/Paris")
+# 確認輸出內容
 ParisLouis
 ```
 
@@ -184,9 +211,14 @@ chNumbersWith0 <- sample(ch0to9, randomLength, replace=T)
 
 ```{r ans21}
 # sumChNumbers
-sumChNumbers_facter <- 
+
+# 指定編碼順序
+sumChNumbers_factor <- 
   factor(chNumbers, levels = c("壹","貳","參","肆","伍","陸","柒","捌","玖"))
-sumChNumbers <- sum(as.integer(sumChNumbers_facter))
+# 加總
+sumChNumbers <- sum(as.integer(sumChNumbers_factor))
+# 確認輸出內容
+sumChNumbers
 ```
 
 ### 2.2 
@@ -194,12 +226,17 @@ sumChNumbers <- sum(as.integer(sumChNumbers_facter))
 
 ```{r ans22}
 # sumChNumbersWith0
+
+# 指定編碼順序
 chNumbersWith0_facter <- 
   factor(
     chNumbersWith0, 
     levels = c("零","壹","貳","參","肆","伍","陸","柒","捌","玖")
   )
+# 加總
 sumChNumbersWith0 <- sum(as.integer(chNumbersWith0_facter))
+# 確認輸出內容
+sumChNumbersWith0
 ```
 
 
@@ -252,10 +289,11 @@ Dear Mary:
 ```{r ans32}
 # dearStudent
 dearStudent <-
-  cat("Dear", student$name, ":", 
-      "\n\n  貼心提醒您，作業上傳截止時間是", 
-      format_ISO8601(student$deadline, usetz = T), 
-      "。\n\n敬祝學安\n\n你的貼心學伴巴西利bot silly")
+  cat(
+    "Dear", student$name, ":", 
+    "\n\n  貼心提醒您，作業上傳截止時間是", 
+    format_ISO8601(student$deadline, usetz = T),
+    "。\n\n敬祝學安\n\n你的貼心學伴巴西利bot silly")
 ```
 
 
