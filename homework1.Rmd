@@ -183,6 +183,7 @@ Louis臨時被要求整理財報資料，而在比賽開始後的15分鐘出現�
 ```{r ans15}
 # ParisLouis
 
+# method 1
 # 經過的時間長度
 timelethgth <- minutes(15) 
 # Allen發訊息的時間加上經過的時間長度
@@ -190,6 +191,14 @@ LaterTime <-
   as.POSIXlt.numeric(timelethgth, tz="America/New_York", NyAllen) 
 # 轉換到Louis的時區
 ParisLouis <- with_tz(LaterTime, tz="Europe/Paris")
+# 確認輸出內容
+ParisLouis
+
+# method 2
+# Allen發訊息的時間加上經過的時間長度
+LaterTime2 <- NyAllen+15*60
+# 轉換到Louis的時區
+ParisLouis <- with_tz(LaterTime2, tz="Europe/Paris")
 # 確認輸出內容
 ParisLouis
 ```
