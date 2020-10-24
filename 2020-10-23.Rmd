@@ -15,5 +15,38 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 
+YearRange <- c(1616:1626,1627:1635,1636:1643,1644:1661,1662:1722,1723:1735,1736:1795,1796:1820,1821:1850,1851:1861,1862:1874,1875:1908,1909:1911)
+ReignTitle <- c("天命","天聰","崇德","順治","康熙","雍正","乾隆","嘉慶","道光","咸豐","同治","光緒","宣統")
+
+# 已知清朝年號想知道對應的西元年範圍
+## 隨機抽取一個年號
+reigntitle <- sample(ReignTitle,1,replace = T)
+## 找出對應的西元年範圍
+RiegnTitle_YearRange <- 
+  factor(reigntitle, 
+         levels = ReignTitle,
+         labels = c("1616:1626","1627:1635","1636:1643","1644:1661","1662:1722","1723:1735","1736:1795","1796:1820","1821:1850","1851:1861","1862:1874","1875:1908","1909:1911"))
+## 答案
+print(RiegnTitle_YearRange)
+
+# 已知西元年想知道對應的西元年範圍
+## 在清朝統治時間內隨機抽取一年
+year <- sample(1616:1911, 1, replace = T)
+## 找出對應的年號
+???
+```
+```{r}
+da
+```
+
+```{r}
+ch1to9 <- c("壹","貳","參","肆","伍","陸","柒","捌","玖")
+ch0to9 <- c("零", ch1to9)
+chNumbers <- sample(ch1to9, 500, replace = T)
+randomLength <- sample(300:1000,1)
+chNumbersWith0 <- sample(ch0to9, randomLength, replace=T)
+chNumbers
+randomLength
+chNumbersWith0
 ```
 
