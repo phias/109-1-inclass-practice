@@ -191,7 +191,7 @@ LaterTime <-
   as.POSIXlt.numeric(timelethgth, tz="America/New_York", NyAllen) 
 # 轉換到Louis的時區
 ParisLouis <- with_tz(LaterTime, tz="Europe/Paris")
-# 確認輸出內容
+# 結果
 ParisLouis
 
 # method 2
@@ -199,7 +199,7 @@ ParisLouis
 LaterTime2 <- NyAllen+15*60
 # 轉換到Louis的時區
 ParisLouis <- with_tz(LaterTime2, tz="Europe/Paris")
-# 確認輸出內容
+# 結果
 ParisLouis
 ```
 
