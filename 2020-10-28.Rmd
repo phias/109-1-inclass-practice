@@ -1,0 +1,27 @@
+---
+title: "課堂練習模版"
+author: "phias"
+date: "2020-10-28
+output: output_format
+params:
+  id: "410674270"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+
+```{r}
+vectorExample <- c("小明", "小英", "大雄")
+vectorExample
+vectorExample[c(T, T, F)]  # 要，要，不要
+```
+
+
+```{r}
+# 有多少位置可選：
+length(vectorExample)
+```
+
