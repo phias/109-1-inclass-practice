@@ -244,6 +244,7 @@ chNumbersWith0_facter <-
   )
 # 加總
 sumChNumbersWith0 <- sum(as.integer(chNumbersWith0_facter))
+# 正確答案：sumChNumbersWith0 <- sum(as.integer(fct_chNumbersWith0)) - length(chNumbersWith0)
 # 確認輸出內容
 sumChNumbersWith0
 ```
@@ -278,7 +279,7 @@ student <-
           to=ymd_hms("2020-11-03 08:00:00", tz="Asia/Taipei"), by=60*60),1
     )
   )
-student$deadline
+student
 ```
 
 請針對抽出來的學生建立一個dearStudent物件，它只有一個字串元素值，且cat(dearStudent)螢幕會顯示，如下訊息：
@@ -304,6 +305,14 @@ dearStudent <-
     format_ISO8601(student$deadline, usetz = T),
     "。\n\n敬祝學安\n\n你的貼心學伴巴西利bot silly")
 ```
+
+```{r}
+dearStudent <- paste0("Dear ",student$name,":\n\n  貼心提醒您，作業上傳截止時間是",format_ISO8601(with_tz(student$deadline, tzone="UTC"),usetz = T),"。\n\n敬祝學安\n\n你的貼心學伴巴西利bot silly
+")
+writeLines(dearStudent)
+
+```
+
 
 
 ## 4. Handling error messages
