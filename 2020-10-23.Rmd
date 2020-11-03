@@ -57,8 +57,4 @@ randomLength
 chNumbersWith0
 ```
 
-```{r}
-
-```
-
 
