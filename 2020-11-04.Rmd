@@ -1,0 +1,23 @@
+---
+title: "課堂練習模版"
+author: "phias"
+date: "2020-11-04"
+output: output_format
+params:
+  id: "410674270"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+
+```{r}
+USelection2020 <- list(
+  Takeall = 270,
+  time = ymd_hm("2020-11-03 15:00",tz="Asia/Taipei"),
+  TrumpElectoralVote = 213,
+  BidenElectoralVote = 224
+)
+```
