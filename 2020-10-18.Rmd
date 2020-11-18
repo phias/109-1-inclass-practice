@@ -12,6 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Your code
+```{r}
+# 開啟lubridate才能使用ymd_hms等這類函數
+library(lubridate)
+```
 
 # input time # human tells computer
 ```{r}
@@ -276,10 +280,7 @@ toJSON(mingsPurchase3)
 # save obect
 ```{r}
 object1 <- c(2,5)
-object2 <- ymd_hms(
-  c("2015-03-22 12:28:42","2017-12-22 15:33:48"),
-  tz="Asia/Taipei"
-)
+object2 <- ymd_hms(c("2015-03-22 12:28:42","2017-12-22 15:33:48"),tz="Asia/Taipei")
 object3 <- list(2, FALSE, c("a","b","c"))
 save(object1, object2, object3, file="threeObjects.Rda")
 ```
@@ -312,6 +313,5 @@ print(jaaccyycommit)
 
 ```{r}
 
-print(jaaccyycommit)
 ```
 
