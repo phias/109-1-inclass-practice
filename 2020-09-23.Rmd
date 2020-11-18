@@ -13,9 +13,20 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Your code
 
+## 開發工具下載
+```{r}
+install.packages("devtools")
+remotes::install_github("tpemartin/econDS", force=T)
+```
+
+
+## "=""<-"不全然等同
+"="比較常使用在命名上，"<-"比較常作為將東西放進物件裡面的指令
 ```{r}
 a=2
+a <- 2
 ```
+## 多語言環境
 ```{python}
-
+# 這裡面可以使用python語法
 ```
