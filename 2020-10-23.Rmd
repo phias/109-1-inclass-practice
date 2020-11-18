@@ -12,12 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Your code
-
-```{r}
-YearRange <- c(1616:1626,1627:1635,1636:1643,1644:1661,1662:1722,1723:1735,1736:1795,1796:1820,1821:1850,1851:1861,1862:1874,1875:1908,1909:1911)
-```
-
-
 ```{r}
 ReignTitle <- c("天命","天聰","崇德","順治","康熙","雍正","乾隆","嘉慶","道光","咸豐","同治","光緒","宣統")
 
@@ -35,6 +29,73 @@ RiegnTitle_YearRange <-
                   "1862~1874","1875~1908","1909~1911"),"年"))
 ## 答案
 print(RiegnTitle_YearRange)
+```
+
+```{r}
+ReignTitle <- c("天命","天聰","崇德","順治","康熙","雍正","乾隆","嘉慶","道光","咸豐","同治","光緒","宣統")
+
+# 已知清朝年號想知道對應的西元年範圍
+## 輸入年號（救命這個互動式輸入超酷炫）
+reigntitle <- rstudioapi::showPrompt(title="Convert to Ching Dynasty", message= "輸入年號")
+## 找出對應的西元年範圍
+RiegnTitle_YearRange <- 
+  factor(reigntitle, 
+         levels = ReignTitle,
+         labels = 
+           paste("西元",
+                c("1616~1626","1627~1635","1636~1643","1644~1661","1662~1722",
+                  "1723~1735","1736~1795","1796~1820","1821~1850","1851~1861",
+                  "1862~1874","1875~1908","1909~1911"),"年"))
+## 答案
+print(RiegnTitle_YearRange)
+```
+
+```{r}
+year <- rstudioapi::showPrompt(title="Convert to Ching Dynasty", message= "輸入年分") #readline()#輸入年分
+year <- readline()#輸入年分
+year <- as.integer(year)
+
+#以年號結束的西元年為基準
+year_end <- c("1616","1626","1635","1643","1661","1722","1735","1795",
+              "1820","1850","1861","1874","1908","1911","2021")
+
+title <- c("清朝前","天命","天聰","崇德","順治","康熙","雍正","乾隆","嘉慶","道光","咸豐",
+           "同治","光緒","宣統","民國")
+
+n <- as.integer(1)
+anchor <- as.integer(year_end[n])
+
+while ((year - anchor)>0) {#當輸入的年份比年號的結束年大時，會跟下一個年號的結束年比較(n+1)
+  n <- n+1
+  anchor <- as.integer(year_end[n])
+}
+print((title[n]))
+```
+
+```{r}
+# lubridate: 
+library(lubridate)
+## %--% creates interval of time
+## %within% check if time falls within an interval of time
+
+# 天命：1616-1626
+
+start <- ymd("1616-01-01")
+end <- ymd("1626-12-31")
+
+TianMingInterval = start %--% end
+
+# case 1
+year <- 1618
+inputTime <- ymd(paste0(year, "01-01"))
+isTianMing <- inputTime %within% TianMingInterval
+isTianMing
+
+# case 2
+year <- 1636
+inputTime <- ymd(paste0(year, "01-01"))
+isTianMing <- inputTime %within% TianMingInterval
+isTianMing
 ```
 
 
