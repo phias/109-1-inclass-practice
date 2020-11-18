@@ -24,6 +24,7 @@ library(knitr)
 purl("2020-09-30.Rmd")
 ```
 
+
 ```{r}
 a <- 2
 ```
