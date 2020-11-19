@@ -12,7 +12,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Your code
+### 刪除
+```{r}
+LL <- list('a', T, 183)
+LL[c(1,3)] <- NULL 
+print(LL) 
+```
 
+###data frame
 ```{r}
 example <- list(
   name=c("小明","小花","小新","美美"),
@@ -24,11 +31,20 @@ example <- list(
   allowance=factor(c("0-1000","1001-2000","2000+","1001-2000")),
   bloodType=c("A","B","B","O")
 )
+
+tr_example <- purrr::transpose(example)
+str(tr_example)
+
+df_example <- as.data.frame(example)
+df_tr_example <- as.data.frame(tr_example)
 ```
 
 ```{r}
-tr_example <- purrr::transpose(example)
-str(tr_example)
-df_example <- as.data.frame(example)
+# 使用list的工具
+df_example$name[c(1,4)]
+
+# 使用data frame的延伸工具`[.row, .column]`
+df_example[c(1,4), "name"]
+
 ```
 
