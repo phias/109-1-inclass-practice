@@ -78,7 +78,8 @@ sukiyaMenu <- jsonlite::fromJSON("https://www.dropbox.com/s/iu9b1hnvbtss83q/suki
 
 ```{r ans21}
 # sukiyaMenu
-str(sukiyaMenu)
+sukiyaMenu$`※注意事項` <- NULL
+sukiyaMenu
 ```
 
 ***
@@ -90,7 +91,7 @@ str(sukiyaMenu)
 
 ```{r ans22}
 # totalAmount
-totalAmount <- sukiyaMenu[["雞肉丼類"]][[1]][["product_variations"]][[2]][["price"]]+sukiyaMenu[["鰻魚丼類"]][[2]][["product_variations"]][[2]][["price"]]
+totalAmount <- sukiyaMenu[["雞肉丼類"]][[1]][["product_variations"]][[2]][["price"]]+sukiyaMenu[["鰻魚丼類"]][[2]][["product_variations"]][[1]][["price"]]
 totalAmount
 ```
 
