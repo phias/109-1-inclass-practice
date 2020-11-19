@@ -1,0 +1,96 @@
+---
+title: "homework 2"
+output: html_document
+params:
+  studentName: "你的名字"
+  studentID: "%id%"
+---
+
+# 注意事項
+
+存檔與填寫注意事項：
+
+  本文檔開始的Frontmatter中，studentID（即key）其value目前為"你的學號"，以上面學號為例則必需改成"41078392"；而studentName（key）其value目前為"你的名字"，以上面名字為例則必需改成"王小明"
+
+> 每次作業滿分10分：有寫作業於期限內上傳得3分，剩餘7分依作業準確率決定最後得分多寡，除非該題另有規定。
+
+> 前述存檔與frontmatter要求缺任何一個則扣1分。
+
+請先執以下code chunk, 引入所需packages，答案禁止引用其他套件（Package）。
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, eval=F)
+library(lubridate); library(jsonlite); library(readr)
+```
+
+# 題目
+
+## 1. Foodpanda Sukiya
+請完成第4章綜合練習第一大題
+
+### 1.1
+
+```{r ans11}
+# newPromotion1 
+```
+
+### 1.2
+
+```{r ans12}
+# recommend1
+recommend1 
+```
+
+### 1.3
+
+```{r ans13}
+# sukiyaMenu
+```
+
+### 1.4
+
+```{r ans14}
+# sukiyaMenu2
+```
+
+### 1.5
+
+```{r ans15}
+# sukiyaMenu2
+```
+
+### 1.6
+
+```{r ans16}
+# sukiyaMenu4
+```
+
+## 2. Foodpanda Sukiya 2
+
+課本[4.2.6](https://tpemartin.github.io/NTPU-R-for-Data-Science/operationonvectorandlist.html#sukiya-menu) 是真實Foodpana傳送到使用者端的資料，請執行以下該小節程式引入sukiyaMenu (請勿使用第一大題的sukiyaMenu，兩者是不同的):
+
+```{r data2}
+sukiyaMenu <- jsonlite::fromJSON("https://www.dropbox.com/s/iu9b1hnvbtss83q/sukiyaMenu.json?dl=1", simplifyDataFrame = F)
+```
+
+
+### 2.1 
+請刪除sukiyaMenu裡的第一個元素（元素名稱是"※注意事項", 答案物件是sukiyaMenu本身（刪除後的結果）
+
+```{r ans21}
+# sukiyaMenu
+str(sukiyaMenu)
+```
+
+***
+
+老師點了燒烤雞肉丼（飯大碗）、助教點了鰻牛丼（中碗）
+
+### 2.2
+請計算總金額存在totalAmount (class numeric or integer)
+
+```{r ans22}
+# totalAmount
+totalAmount <- sukiyaMenu[["雞肉丼類"]][[1]][["product_variations"]][[2]][["price"]]+sukiyaMenu[["鰻魚丼類"]][[2]][["product_variations"]][[2]][["price"]]
+totalAmount
+```
+
