@@ -2,8 +2,8 @@
 title: "homework 2"
 output: html_document
 params:
-  studentName: "你的名字"
-  studentID: "%id%"
+  studentName: "劉于寧"
+  studentID: "410674270"
 ---
 
 # 注意事項
@@ -30,38 +30,88 @@ library(lubridate); library(jsonlite); library(readr)
 ### 1.1
 
 ```{r ans11}
-# newPromotion1 
+# newPromotion1
+level <- c("新登場","推薦套餐","豪華雙饗丼","牛丼類","咖哩類","豬肉丼類")
+newPromotion1 <- list(
+  category = factor("新登場",levels = level),
+  item = "番茄牛丼",
+  description = "新鮮番茄的酸味，讓人食慾大開",
+  price = 109
+)
+
+str(newPromotion1)
 ```
 
 ### 1.2
 
 ```{r ans12}
 # recommend1
-recommend1 
+level <- c("新登場","推薦套餐","豪華雙饗丼","牛丼類","咖哩類","豬肉丼類")
+recommend1 <- list(
+  category = factor("推薦套餐",levels = level),
+  item = "蔥溫玉牛丼套餐",
+  description = "蔥溫玉牛丼＋自選套餐",
+  price = 149
+)
+str(recommend1)
 ```
 
 ### 1.3
 
 ```{r ans13}
 # sukiyaMenu
+sukiyaMenu <- list(newPromotion1,recommend1)
+str(sukiyaMenu)
 ```
 
 ### 1.4
 
 ```{r ans14}
 # sukiyaMenu2
+SukiyaMenu <- sukiyaMenu
+SukiyaMenu[[1]]$category <- "牛丼類"
+SukiyaMenu[[1]]$price <-120
+sukiyaMenu2 <- SukiyaMenu
+str(sukiyaMenu2)
 ```
 
 ### 1.5
 
 ```{r ans15}
-# sukiyaMenu2
+# sukiyaMenu3
+sukiyaMenu3 <- list(
+  category = 
+    c(as.character(sukiyaMenu[[1]]$category),as.character(sukiyaMenu[[2]]$category)),
+  item = c(sukiyaMenu[[1]]$item,sukiyaMenu[[2]]$item),
+  description = c(sukiyaMenu[[1]]$description,sukiyaMenu[[2]]$description),
+  price = c(sukiyaMenu[[1]]$price,sukiyaMenu[[2]]$price)
+)
+str(sukiyaMenu3)
 ```
 
 ### 1.6
 
 ```{r ans16}
 # sukiyaMenu4
+sukiyaMenu4 <- list(
+  list(
+    category = sukiyaMenu[[1]]$category,
+    options = list(
+      item = sukiyaMenu[[1]]$item,
+      description = sukiyaMenu[[1]]$description,
+      price = sukiyaMenu[[1]]$price
+      )
+    ),
+  list(
+    category = sukiyaMenu[[2]]$category,
+    options = list(
+      item = sukiyaMenu[[2]]$item,
+      description = sukiyaMenu[[2]]$description,
+      price = sukiyaMenu[[2]]$price
+    )
+  )
+)
+str(sukiyaMenu4)
 ```
 
 ## 2. Foodpanda Sukiya 2
