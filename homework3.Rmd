@@ -1,0 +1,161 @@
+---
+title: "homework 3"
+output: html_document
+params:
+  studentName: "你的名字"
+  studentID: "你的學號"
+---
+
+# 注意事項
+
+存檔與填寫注意事項：
+
+  本文檔開始的Frontmatter中，studentID（即key）其value目前為"你的學號"，以上面學號為例則必需改成"41078392"；而studentName（key）其value目前為"你的名字"，以上面名字為例則必需改成"王小明"
+
+> 每次作業滿分10分：有寫作業於期限內上傳得3分，剩餘7分依作業準確率決定最後得分多寡，除非該題另有規定。
+
+> 前述存檔與frontmatter要求缺任何一個則扣1分。
+
+請先執以下code chunk, 引入所需packages，答案 __禁止__ 引用其他套件（Package）。
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, eval=F)
+library(lubridate); library(jsonlite); library(readr); library(purrr)
+```
+
+# 題目
+
+## 1. JunyiAcademy Kaggle Data
+
+[原始資料集出處，無需額外下載](https://www.kaggle.com/junyiacademy/learning-activity-public-dataset-by-junyi-academy)
+
+```{r data1}
+Info_UserData <- readr::read_csv("https://www.dropbox.com/s/shnvzs7e5minon8/Info_UserData.csv?dl=1", col_types = cols(user_grade = col_character()))
+head(Info_UserData) # head() 函數只顯示資料前6筆，可用來稍微檢視資料狀況
+```
+
+經過微調後，欄位變數說明如下：
+
+0. 本資料集共有 72758 位使用者，包含 8 個欄位變數。所有被選擇的學生都符合下列條件:
+註冊時間從 `2018-08-01` 到 `2019-07-31`，即是 `107` 學年度內才正式在平台上註冊。且使用者的居住城市需有資料，不能是空值。
+
+1. `uuid`: 每一位使用者獨有的 Id，皆已經去識別化。
+2. `gender`: 使用者的性別，可以設定為男生（male），女生（female），如果沒有設定的話，可以理解為不指定，這邊給的是`NA`。
+3. `first_login_date_TW`: 使用者註冊後第一次登入的那一天。
+4. `user_grade`: 使用者是幾年級（1~12年級）
+5. `user_city`: 使用者住在哪一個縣市？
+6. `has_teacher_cnt`: 使用者在均一平台上有幾位老師？
+7. `is_self_coach`: 使用者有沒有把他自己設為是自己的老師？
+8. `belongs_to_class_cnt`: 使用者在均一平台上隸屬於多少個班級？
+
+------
+
+Clotilde是一位資料科學愛好者，平常在 LINE 做文字資料探勘，參與假新聞偵測與澄清專案。同時身為一位媽媽，閒暇時候常關注教育議題，自從國內知名教育科技非營利組織[均一平台教育基金會 官網](https://official.junyiacademy.org) 在全球最大的資料科學交流平台 [Kaggle](https://www.kaggle.com) 釋放自家的使用者學習活動資料。很興奮決定要來試一下。
+
+她邀請你來協作資料探索，以下是你們的協作討論過程的第一步，請開始。
+
+### 1.1 Factorize the `user_grade`
+
+讀取資料後，我們發現使用者的年級`user_grade`，其資料型態是字串。毫無疑問地，這與現實不適配，且對於後續分析造成很大的侷限。請將`user_grade`這個欄位變數的資料型態改為類別資料（factor）。
+
+請注意，轉換後的資料，其 __呈現順序（由小到大）__以及 __年級層遞（由小到大）__都必須要與現實生活的視讀判斷一致。
+
+此題最後請提供更新後的`Info_UserData`資料集作為批改。
+```{r ans11}
+# Info_UserData
+```
+
+### 1.2 Trade-off on `NA`
+
+兩人也留意到資料集中的使用者性別`gender`欄位變數，很多都沒有設定男生或者女生，同時也為了消弭性別變數對於分析所造成的不必要偏誤。
+
+共識將由你負責篩選出那些`gender`欄位變數為`NA`的使用者們，並且告訴 Clotilde 一共有幾位使用者滿足此題件。請將該結果儲存為`User_Counts_with_gender_NA`。
+```{r ans12}
+# User_Counts_with_gender_NA
+```
+
+### 1.3 Main Users
+
+後來透過更多探索，得知均一平台上國小階段學習資源最豐富，且使用者基群最多。兩人共識第一輪的分析要專注在 __國小一到六年級__，且須同時滿足前述 __`gender`變數為`NA`__的使用者們。
+
+為了方便往後與其他資料集做整合，決定存取使用者的Id（即變數`uuid`）。物件名稱是為`Users_E`
+```{r ans13}
+# Users_E
+```
+
+
+### 1.4 Peer Effect 
+
+考量國小一到六年級是採每兩年重新分班一次，因此ㄧ、三、五年級的小朋友多是剛進到一個新環境，比較可以忽略不易捕捉到的同儕效果，而可以專注在平台對使用者的學習成效影響。
+
+__請延續前小題的兩個條件__（屬於國小一到六年級，且性別欄位內容是`NA`），將資料集內屬於一、三、五年級的使用者 Id 另外區分出來叫做物件`Users_E_in_odd_grades`。以供往後使用。
+
+```{r ans14}
+# Users_E_in_odd_grades
+```
+
+### 1.5 Educational Inequality
+
+兩人除了想觀察個體面、小範圍的同儕效果，也好奇總體面、大範圍的教育資源不均等。同樣地，想要分析就得先做準備， __請延續 1.2 以及 1.3 的條件__，並運用使用者隸屬的縣市（即`user_city`），找到那群非六都的平台使用者，一樣是需要他們的使用者 Id，並且另儲存為`Users_E_Not_Metro`。
+
+六都縣市代碼：
+
+- tp, 台北市
+- ntpc, 新北市
+- ty, 桃園市
+- tc, 台中市
+- tn, 台南市
+- kh, 高雄市
+
+```{r ans15}
+# Users_E_Not_Metro 
+```
+
+### 1.6 Better_Cared or Precocious Cohort
+
+城鄉差距所帶來的教育資源差距屢見不鮮，在本資料集中，若想捕捉那些受負面影響較小的孩童，Clotilde 提議應該可以從兩個面向著手，要不就是：
+
+1. 該使用者相對早慧，有較高的自主學習能力，知曉自己可以成為自己的老師。 具體行為表現是在變數`is_self_coach`。
+
+或者就是：
+
+2. 該使用者第一次登入平台時間恰好就是 `107` 學年度上學期的開學日（`2018/08/30`），合理預期應該是該使用者的老師，在新學年開始使用均一平台做為教學與學生的學習輔助工具。
+
+所以 __請延續 1.5 題（即需要延續 1.2, 1.3 的條件）__，針對那些非六都的使用者們，找到那些推測受城鄉差距負面影響較小的使用者群，一樣是找到使用者的 Id，儲存為`Users_E_Not_Metro_Buffer`。
+
+```{r ans16}
+# Users_E_Not_Metro_Buffer
+```
+
+
+## 2 Presidential Election
+
+請完成第4章綜合練習的第2大題。
+
+```{r data2}
+election2020 <- jsonlite::fromJSON(
+  "https://www.dropbox.com/s/a3torx0p41hheb6/presidentElection2020.json?dl=1"
+)
+```
+
+### 2.1
+
+
+```{r ans21}
+# best_performance_dpp
+```
+
+### 2.2 
+
+```{r ans22}
+# levelSequence
+```
+
+(Use named vector to obtain desired level sequence is a very common technique.)
+
+### 2.3
+
+```{r ans23}
+# election2020[["鄉(鎮、市、區)別"]]
+```
+
+
