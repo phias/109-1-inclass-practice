@@ -1,0 +1,60 @@
+---
+title: "課堂練習模版"
+author: "phias"
+date: "2020-11-25"
+output: html_document
+params:
+  id: "410674270"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+
+```{r}
+example <- list(
+  name=c("小明","小花","小新","美美"),
+  height=c(175,166,170,160),
+  weight=c(77,NA,60,43),
+  birthday=lubridate::ymd(c("1998-03-11","1999-12-22","1995-08-22","2001-10-10")),
+  hobby=c("美食 旅遊","旅遊 時尚","3C 美食","音樂 旅遊"),
+  residence=c("Taipei","New Taipei","Taichung","Kaohsiung"),
+  allowance=factor(c("0-1000","1001-2000","2000+","1001-2000")),
+  bloodType=c("A","B","B","O")
+)
+str(example)
+tr_example <- purrr::transpose(example)
+str(tr_example)
+df_example <- as.data.frame(example)
+
+```
+
+```{r}
+example2 <- 
+  list(
+    name=c("John", "Mary"),
+    height=list(178, 168), # not atomic vector
+    weight=c(88, 56, 70) # not the same length as other elements
+  )
+str(example2)
+
+as.data.frame(example2)
+```
+
+```{r}
+set.seed(2020)
+ages_chr <- sample(c("4以下","5-10","11-15"), 15, replace=T)
+ages_chr
+
+unique(ages_chr)
+
+ages_fct1 <- 
+  factor(
+    ages_chr
+  )
+table(ages_fct1)
+table(ages_chr)
+```
+
