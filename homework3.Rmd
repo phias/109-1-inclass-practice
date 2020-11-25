@@ -2,8 +2,8 @@
 title: "homework 3"
 output: html_document
 params:
-  studentName: "你的名字"
-  studentID: "你的學號"
+  studentName: "劉于寧"
+  studentID: "410674270"
 ---
 
 # 注意事項
@@ -61,6 +61,9 @@ Clotilde是一位資料科學愛好者，平常在 LINE 做文字資料探勘，
 
 此題最後請提供更新後的`Info_UserData`資料集作為批改。
 ```{r ans11}
+unique(Info_UserData$user_grade)
+Info_UserData$user_grade <- factor(Info_UserData$user_grade,levels = c("1","2","3","4","5","6","7","8","9","10","11","12"),ordered = T)
+head(Info_UserData$user_grade)
 # Info_UserData
 ```
 
@@ -70,7 +73,9 @@ Clotilde是一位資料科學愛好者，平常在 LINE 做文字資料探勘，
 
 共識將由你負責篩選出那些`gender`欄位變數為`NA`的使用者們，並且告訴 Clotilde 一共有幾位使用者滿足此題件。請將該結果儲存為`User_Counts_with_gender_NA`。
 ```{r ans12}
+
 # User_Counts_with_gender_NA
+
 ```
 
 ### 1.3 Main Users
@@ -80,6 +85,7 @@ Clotilde是一位資料科學愛好者，平常在 LINE 做文字資料探勘，
 為了方便往後與其他資料集做整合，決定存取使用者的Id（即變數`uuid`）。物件名稱是為`Users_E`
 ```{r ans13}
 # Users_E
+
 ```
 
 
@@ -91,6 +97,7 @@ __請延續前小題的兩個條件__（屬於國小一到六年級，且性別�
 
 ```{r ans14}
 # Users_E_in_odd_grades
+
 ```
 
 ### 1.5 Educational Inequality
