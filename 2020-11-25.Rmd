@@ -25,10 +25,29 @@ example <- list(
   bloodType=c("A","B","B","O")
 )
 str(example)
+
+
+```
+##transpose
+```{r}
 tr_example <- purrr::transpose(example)
 str(tr_example)
+```
+##data frame
+```{r}
 df_example <- as.data.frame(example)
+```
 
+```{r}
+tr_tr_example <- purrr::transpose(tr_example) # 無法df
+```
+
+```{r}
+library(purrr)
+Map(tr_tr_example,
+    unlist) -> tr_tr_example2
+df_example2 <- 
+  as.data.frame(tr_tr_example2)
 ```
 
 ```{r}
@@ -57,4 +76,63 @@ ages_fct1 <-
 table(ages_fct1)
 table(ages_chr)
 ```
+
+##NA
+```{r}
+x2 <- c(1,NA,10)
+y2 <- c(-1,NA,20)
+
+x3 <- c(NA,"小花")
+y3 <- c(NA,"小華")
+
+x2
+is.na(x2)
+```
+
+```{r}
+c(22,NA,18) -> a
+a==NA #no
+is.na(a) #判斷NA的時候必須使用is.na
+```
+
+```{r}
+print(example[c("name","weight")])
+
+pick_na <- is.na(example$weight)
+example$name[pick_na]
+```
+
+```{r}
+print(example[c("name","hobby")])
+
+pick_loveFood <- stringr::str_detect(example$hobby,c("美食","旅遊"))
+pick_loveFood
+example$name[pick_loveFood]
+```
+##4.4.3 extra tool
+```{r}
+# 使用list的工具
+df_example$name[c(1,4)]
+
+# 使用data frame的延伸工具`[.row, .column]`
+df_example[c(1,4), "name"]
+df_example[c(1,4), c("name","residence")]
+
+# 只使用list工具
+list(
+  name=df_example$name[c(1,4)],
+  residence=df_example$residence[c(1,4)]
+)
+# 要小心以下用法是error
+df_example[c("name","residence")][c(1,4)]
+```
+##奇數、偶數
+```{r}
+sequenceNums <- c(11, 6, 8, 11, 12, 11, 3, 7, 10, 8)
+sequenceNums %% 2 # 餘數為1則是奇數，0則是偶數
+pick_evens <- (sequenceNums %% 2) == 1
+sequenceNums[pick_evens]
+```
+
+
 
