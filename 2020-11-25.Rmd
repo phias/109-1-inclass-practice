@@ -28,12 +28,12 @@ str(example)
 
 
 ```
-##transpose
+###transpose
 ```{r}
 tr_example <- purrr::transpose(example)
 str(tr_example)
 ```
-##data frame
+###data frame
 ```{r}
 df_example <- as.data.frame(example)
 ```
@@ -77,7 +77,7 @@ table(ages_fct1)
 table(ages_chr)
 ```
 
-##NA
+###NA
 ```{r}
 x2 <- c(1,NA,10)
 y2 <- c(-1,NA,20)
@@ -86,12 +86,12 @@ x3 <- c(NA,"小花")
 y3 <- c(NA,"小華")
 
 x2
-is.na(x2)
+is.na(x2) #NA的判定語法
 ```
 
 ```{r}
 c(22,NA,18) -> a
-a==NA #no
+#a==NA ##這個判定沒有用
 is.na(a) #判斷NA的時候必須使用is.na
 ```
 
@@ -109,7 +109,7 @@ pick_loveFood <- stringr::str_detect(example$hobby,c("美食","旅遊"))
 pick_loveFood
 example$name[pick_loveFood]
 ```
-##4.4.3 extra tool
+###4.4.3 extra tool
 ```{r}
 # 使用list的工具
 df_example$name[c(1,4)]
@@ -126,7 +126,7 @@ list(
 # 要小心以下用法是error
 df_example[c("name","residence")][c(1,4)]
 ```
-##奇數、偶數
+###奇數、偶數
 ```{r}
 sequenceNums <- c(11, 6, 8, 11, 12, 11, 3, 7, 10, 8)
 sequenceNums %% 2 # 餘數為1則是奇數，0則是偶數
@@ -134,5 +134,21 @@ pick_evens <- (sequenceNums %% 2) == 1
 sequenceNums[pick_evens]
 ```
 
+###sort
+```{r}
+# 由小排到大
+##1
+a<-sort(x) 
+fac_a<-factor(x,levels = a)
+##2
+fac_a<-factor(x,levels = rev(b))
 
+#由大排到小
+##1
+b<-sort(x, decreasing=T) 
+fac_b<-factor(x,levels = b)
+##2
+fac_b<-factor(x,levels = rev(a))
+
+```
 
