@@ -168,13 +168,24 @@ election2020 <- jsonlite::fromJSON(
 
 
 ```{r ans21}
-
+# transpose
+tr_election2020 <- purrr::map(election2020,unlist)
+# best_performance_dpp list
+best_performance_dpp <- list(
+  county=tr_election2020[[1]],
+  votes=round(tr_election2020[[5]]*tr_election2020[[4]]),
+  supporting_rate=tr_election2020[[4]]
+)
 # best_performance_dpp
 ```
 
 ### 2.2 
 
 ```{r ans22}
+dppSupportRate <- tr_election2020[[4]]
+names(dppSupportRate) <- tr_election2020[[1]] #name element based on its county
+dppSupportRate_sorted <- sort(dppSupportRate)
+levelSequence <- names(dppSupportRate_sorted)
 # levelSequence
 ```
 
@@ -183,6 +194,7 @@ election2020 <- jsonlite::fromJSON(
 ### 2.3
 
 ```{r ans23}
+election2020[["鄉(鎮、市、區)別"]] <- factor(election2020[["鄉(鎮、市、區)別"]],levels = rev(levelSequence))
 # election2020[["鄉(鎮、市、區)別"]]
 ```
 
