@@ -1,0 +1,46 @@
+---
+title: "課堂練習模版"
+author: "phias"
+date: "2020-12-03"
+output: html_document
+params:
+  id: "410674270"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+
+```{r}
+# 面積
+readline_100px <- rep("red",100)
+as.raster(matrix(readline_100px,1,1)) -> readline_100px
+plot(readline_100px)
+```
+
+```{r}
+# 線條
+readline_100px <- rep("red",100)
+as.raster(readline_100px) -> readline_100px
+plot(readline_100px)
+```
+
+```{r}
+library(magick)
+# windows user needs this step
+download.file("https://www.dropbox.com/s/7ab61bq92s9yt4e/ntpu.png?dl=1",destfile = "./ntpu.png",mode = "wb")
+# read original image file
+ntpuLogo <- image_read("./ntpu.png")
+# convert image into a matrix of color codes (raster matrix)
+ntpuLogoRaster <- as.raster(ntpuLogo)
+
+# plot raster image
+plot(ntpuLogoRaster)
+```
+
+```{r}
+ntpuLogoRaster[110,122]
+```
+
