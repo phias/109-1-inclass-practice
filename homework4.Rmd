@@ -2,8 +2,8 @@
 title: "homework 4"
 output: html_document
 params:
-  studentName: "劉于寧"
-  studentID: "410674270"
+  studentName: "你的名字"
+  studentID: "你的學號"
 ---
 
 # 注意事項
@@ -50,14 +50,22 @@ plot(ntpuLogoRaster)
 
 
 ```{r ans41}
-
+ntpuLogoRasterMatrix <- as.matrix(ntpuLogoRaster)
+ntpuLogoRasterMatrix[1:183,c(1,300)] <- rep("red",183)
+ntpuLogoRasterMatrix[c(1,183),1:300] <- rep("red",300)
+as.raster(ntpuLogoRasterMatrix) -> ntpuLogoRaster_redFrame
+plot(ntpuLogoRaster_redFrame)
 # ntpuLogoRaster_redFrame
 ```
 
 #### 4.2 Create grey rectangular{-}
 
 ```{r ans42}
-
+ntpuLogoRaster_matrix <- as.matrix(ntpuLogoRaster)
+grey_1681px <- rep("grey",1681)
+matrix(grey_1681px,41,41) -> ntpuLogoRaster_matrix[105:145,55:95]
+as.raster(ntpuLogoRaster_matrix) -> ntpuLogoRaster_greySelect
+plot(ntpuLogoRaster_greySelect)
 # ntpuLogoRaster_greySelect
 ```
 
@@ -66,12 +74,20 @@ plot(ntpuLogoRaster)
 
 ```{r ans43}
 ntpuLogoRaster_blue <- ntpuLogoRaster
+
 {
-  
+  whichIsNotTransparent <- 
+    str_which(
+      as.matrix(ntpuLogoRaster_blue),
+      pattern = "transparent",
+      negate = T
+    )
   # put your code inside here
 }
+
 ntpuLogoRaster_blue[whichIsNotTransparent] <- "blue"
 plot(ntpuLogoRaster_blue)
+
 # whichIsNotTransparent
 ```
 
@@ -80,14 +96,16 @@ plot(ntpuLogoRaster_blue)
 
 Run the following program to get the data object **hotSpot**
 ```{r data6}
-helpSpotResponse <- 
-  httr::GET("https://od.moi.gov.tw/api/v1/rest/datastore/A01010000C-000628-063",httr::content_type_json())
-hotSpot <- httr::content(helpSpotResponse)
+hotSpot <- jsonlite::fromJSON(
+  "https://www.dropbox.com/s/77awvomxaseg8b3/helpSpot.json?dl=1", simplifyDataFrame = F
+)
 ```
 
 #### 6.1 Delete Record{-}
 
 ```{r ans61}
+records <- hotSpot$result$records
+recordsList <- records[-c(1)]
 # recordsList
 ```
 
@@ -95,6 +113,9 @@ hotSpot <- httr::content(helpSpotResponse)
 #### 6.2 list to data frame{-}
 
 ```{r ans62}
+purrr::transpose(recordsList)->tr_records
+purrr::map(tr_records,unlist) -> tr_records_unlist
+as.data.frame(tr_records_unlist) -> df_records
 # df_records
 ```
 
@@ -102,18 +123,37 @@ hotSpot <- httr::content(helpSpotResponse)
  
 
 ```{r ans63}
-## df_records[c("DeptNm", "BranchNm)]
+factor(tr_records_unlist$DeptNm) -> tr_records_unlist$DeptNm
+factor(tr_records_unlist$BranchNm) -> tr_records_unlist$BranchNm
+as.data.frame(tr_records_unlist) -> df_records
+
+# df_records[c("DeptNm", "BranchNm")]
 ```
 
 #### 6.4{-}
 
 ```{r ans64}
+df_records$county <- factor(
+  str_extract(df_records$DeptNm,pattern = "[\u4E00-\u9FFF]{2}(市|縣)")
+)
 # df_records$county
 ```
 
 #### 6.5{-}
 
 ```{r ans65}
-# df_records$zone
+df_records$zone <- df_records$county
+df_records$zone <-
+  factor(
+    str_replace_all(
+      df_records$zone,
+      c("(臺北市|新北市|基隆市|新竹市|桃園市|新竹縣|宜蘭縣)"="北部地區",
+        "(臺中市|苗栗縣|彰化縣|南投縣|雲林縣)"="中部地域",
+        "(高雄市|臺南市|嘉義市|嘉義縣|屏東縣|澎湖縣)"="南部地域",
+        "(花蓮縣|臺東縣)"="東部地域"
+      )
+    )
+  )
+df_records$zone
 ```
 
