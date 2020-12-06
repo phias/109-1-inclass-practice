@@ -12,16 +12,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Your code
-
-```{r}
 # 面積
+```{r}
 readline_100px <- rep("red",100)
-as.raster(matrix(readline_100px,1,1)) -> readline_100px
+as.raster(matrix(readline_100px,1,2)) -> readline_100px
 plot(readline_100px)
 ```
-
-```{r}
 # 線條
+```{r}
 readline_100px <- rep("red",100)
 as.raster(readline_100px) -> readline_100px
 plot(readline_100px)
@@ -42,5 +40,81 @@ plot(ntpuLogoRaster)
 
 ```{r}
 ntpuLogoRaster[110,122]
+```
+
+```{r}
+ntpuLogoRaster[1, 1] # get you "transparent" as a color
+
+ntpuLogoMatrix <- as.matrix(ntpuLogoRaster)
+ntpuLogoMatrix[1, 1] # get you "transparent" as character
+plot(ntpuLogoRaster)
+plot(ntpuLogoMatrix) # won't work
+plot(as.raster(ntpuLogoMatrix)) # work again
+```
+
+# matrix
+```{r}
+A2H <- LETTERS[1:8] # 大寫字母A to H
+# 要拿A, G
+A2H[c(1,7)]
+
+# 一旦變成matrix
+matrixA2H <- matrix(A2H, 2, 4)
+
+# 要拿A, G可以
+matrixA2H[c(1,7)]
+matrixA2H
+# 也可以
+matrixA2H[1,c(1,4)]
+```
+
+
+```{r}
+charMat <- matrix(LETTERS[1:6], 2,3)
+charRaster1 <- charRaster2 <- as.raster(charMat)
+
+# Find out the location of A E and replaced them with wooo
+str_which(charMat, pattern = "[AE]") -> mat_whichHasAE
+
+charMat[mat_whichHasAE] <- "wooo"
+cat('replace A/E with wooo: correct outcome from matrix')
+charMat
+
+str_which(charRaster1, "[AE]") -> raster_whichHasAE
+charRaster1[raster_whichHasAE] <- "wooo"
+cat('replace A/E with wooo: wrong outcome from raster')
+charRaster1
+```
+
+#list
+### the notice about list frame  
+```{r}
+motherObject <- list(
+  name=c("Mary", "John"),
+  height=c(162, 175)
+)
+
+motherObject[[1]] <- c("Beth", "John")
+motherObject$name <- c("Kate", "John")
+
+motherObject[1] <- list(c("Beth", "John"))
+
+str(motherObject)
+```
+
+
+```{r}
+motherObject2 <- motherObject
+motherObject2$name <- list(c("Kate", "John")) # 過度尊重母層結構
+str(motherObject2)
+```
+
+
+
+
+```{r}
+cat('replace A/E with wooo: correct outcome from raster\n with index from its matrix equivalence\n')
+charRaster2[mat_whichHasAE] <- "wooo"
+charRaster2
 ```
 
