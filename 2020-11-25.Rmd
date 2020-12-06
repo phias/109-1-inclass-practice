@@ -44,10 +44,10 @@ tr_tr_example <- purrr::transpose(tr_example) # 無法df
 
 ```{r}
 library(purrr)
-Map(tr_tr_example,
-    unlist) -> tr_tr_example2
+purrr::map(tr_tr_example,
+    unlist) -> map_tr_example2 # map才能df
 df_example2 <- 
-  as.data.frame(tr_tr_example2)
+  as.data.frame(map_tr_example2)
 ```
 
 ```{r}
