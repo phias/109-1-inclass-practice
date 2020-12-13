@@ -2,7 +2,7 @@
 title: "課堂練習模版"
 author: "phias"
 date: "2020-12-03"
-output: html_document
+output: output_format
 params:
   id: "410674270"
 ---
@@ -109,12 +109,26 @@ motherObject2$name <- list(c("Kate", "John")) # 過度尊重母層結構
 str(motherObject2)
 ```
 
-
-
-
 ```{r}
 cat('replace A/E with wooo: correct outcome from raster\n with index from its matrix equivalence\n')
 charRaster2[mat_whichHasAE] <- "wooo"
 charRaster2
+```
+
+# str_...
+```{r}
+sameIdentities <- c("臺北市", "台北市", "台北大學", "臺北大學", "基隆市")
+#str_detect
+str_detect(
+  sameIdentities, pattern="[台臺]")
+#str_view_all
+str_view_all(
+  sameIdentities, pattern="[台臺]")
+#str_extract
+str_extract(
+  sameIdentities, pattern="[台臺]北市")
+str_extract(
+  sameIdentities, pattern="[台臺]北")
+
 ```
 
