@@ -14,6 +14,35 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Your code
 
 ```{r}
+addresses <- c(
+  '臺中市后里區公館里尾社路385號',
+  '新竹市東區科學園路125號1樓',
+  '新竹市北區竹光路99號',
+  '金門縣金城鎮賢庵里山前33號',
+  '臺中市南屯區工業區二十四路23號1樓')
+```
 
+
+```{r}
+str_extract(
+  addresses,
+  "(?<=[縣市])[\u4E00-\u9FFF]+[區鎮]"
+)
+str_extract(
+  addresses,
+  "(?<=[縣市])[^區]+[區鎮]"
+)
+```
+```{r}
+sameIdentities <- c("臺北市", "台北市", "台北大學", "臺北大學", "基隆市")
+
+str_detect(
+  sameIdentities, pattern="[台臺]")
+str_view_all(
+  sameIdentities, pattern="[台臺]")
+str_extract(
+  sameIdentities, pattern="[台臺]北市")
+str_subset(
+  sameIdentities, pattern="[台臺]北市")
 ```
 
