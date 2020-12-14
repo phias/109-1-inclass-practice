@@ -2,8 +2,8 @@
 title: "homework 5"
 output: html_document
 params:
-  studentName: "你的名字"
-  studentID: "你的學號"
+  studentName: "劉于寧"
+  studentID: "410674270"
 ---
 
 # 注意事項
@@ -39,7 +39,9 @@ jsonlite::fromJSON("https://www.dropbox.com/s/w94fz2x0zghcw5v/df_records_6_6.jso
 ```
 
 ```{r ans66}
+str_extract(df_records$Address,pattern = "(?<=[縣市])[^區鎮鄉市縣]+[區鎮鄉市](?!域)") -> df_records$township
 # df_records$township
+df_records$township
 ```
 
 ### 8. Dispute
@@ -78,14 +80,39 @@ list(
 ```{r ans81}
 githubResponse_reshape_X <- {
   contentX <- githubResponse[[1]]$content
-  
+  githubResponse_reshape_X <- list()
+  githubResponse_reshape_X$id <- str_extract(contentX[[1]],pattern = "[0-9]{9}")
+  githubResponse_reshape_X$questionLabel <- str_subset(contentX,pattern = "ans[:alnum:]{2}")
+  githubResponse_reshape_X
 }
 # githubResponse_reshape_X
 ```
 
 #### 8.2 Apply to all
 ```{r ans82}
+githubResponse_reshape <- map(
+  list(1,2,3),
+  ~{
+    content.X <- githubResponse[[.x]]$content
+  githubResponse_reshape_.X <- list()
+  githubResponse_reshape_.X$id <- str_extract(content.X[[1]],pattern = "[0-9]{9}")
+  githubResponse_reshape_.X$questionLabel <- str_subset(content.X,pattern = "ans[:alnum:]{2}")
+  githubResponse_reshape_.X
+  }
+)
+githubResponse_reshape[[4]] <- map(
+  4,
+  ~{
+    content.X <- githubResponse[[.x]]$content
+  githubResponse_reshape_.X <- list()
+  githubResponse_reshape_.X$id <- str_extract(content.X[[1]],pattern = "[0-9]{9}")
+  githubResponse_reshape_.X$questionLabel <- str_extract(content.X,pattern = "ans[:alnum:]{2}")
+  githubResponse_reshape_.X
+  }
+)
+# githubResponse_reshape
 ```
+
 
 #### 8.3 irregular pattern
 
@@ -100,9 +127,13 @@ irregularLabel_x
 ```{r ans83}
 regularSequence <- 
 {
+  a <- str_extract(irregularLabel_x,pattern = "[0-9](?=.)")
+  b <- str_extract(irregularLabel_x,pattern = "(?<=.)[0-9]")
+  c <- str_extract(irregularLabel_x,pattern = "(?<=-)[0-9]")
   
+  regularSequence <- paste0(str_extract(irregularLabel_x,pattern = "[:alpha:]+"), x, , ))
 }
-# regularSequence
+regularSequence
 ```
 
 
@@ -123,6 +154,8 @@ birthday_list <-
 ```
 
 ```{r ans9}
+horoscopesMapped
+
 # horoscopesMapped
 ```
 
