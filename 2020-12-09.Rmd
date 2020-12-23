@@ -45,4 +45,40 @@ str_extract(
 str_subset(
   sameIdentities, pattern="[台臺]北市")
 ```
+```{r}
+library(lubridate)
+originD <- ymd(c(
+  "2020-01-03", 
+  "2020-02-11",
+  "2020-03-08", 
+  "2020-05-07",
+  "2020-09-20",
+  "2020-10-10",
+  "2020-11-07",
+  "2020-12-05"))
+originD
+
+# 由breaks將2020-01-03（含）至2020-12-06（不含）分成三份
+cutD <- cut(originD,
+            breaks = 
+              c(
+                min(originD),
+                ymd(c(
+                "2020-03-08",
+                "2020-05-22",
+                "2020-07-20",
+                "2020-10-11")),
+                max(originD)+days(1)
+              ))
+              
+cutD
+
+levels(cutD) <- c("沒事","事件一","沒事","事件二","沒事")
+
+df <- data.frame(
+  origin=originD,
+  cut=cutD
+)
+View(df)
+```
 
