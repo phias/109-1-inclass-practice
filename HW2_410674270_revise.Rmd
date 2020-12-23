@@ -29,22 +29,22 @@ ans <- new.env()
 
 ### 1.1 (0.75)
 
-
+#### 少了驚嘆號啦
 ```{r ans11me}
 # newPromotion1
 level <- c("新登場","推薦套餐","豪華雙饗丼","牛丼類","咖哩類","豬肉丼類")
 newPromotion1 <- list(
-  category = factor("新登場",levels = level),
+  category = factor(c("新登場"),levels = level),
   item = "番茄牛丼",
   description = "新鮮番茄的酸味，讓人食慾大開",
   price = 109
 )
 
-str(newPromotion1)
+newPromotion1 -> ans
 ```
 
 ```{r ans11}
-{
+
 allLevels = 
   c(
     "新登場",
@@ -61,26 +61,27 @@ newPromotion1 <- list(
   "price"      = 109
 )
 # newPromotion1 
-} %at% ans
+
+all.equal(newPromotion1, ans)
+
 ```
 
 ### 1.2 (0.75)
 
-
+#### 加號一個半形一個全形啦
 ```{r ans12me}
 # recommend1
-level <- c("新登場","推薦套餐","豪華雙饗丼","牛丼類","咖哩類","豬肉丼類")
 recommend1 <- list(
   category = factor("推薦套餐",levels = level),
   item = "蔥溫玉牛丼套餐",
   description = "蔥溫玉牛丼＋自選套餐",
   price = 149
 )
-str(recommend1)
+ans <- recommend1
 ```
 
 ```{r ans12}
-{
+
 recommend1 <- list(
   "category"   = factor(c("推薦套餐"), levels=allLevels),
   "item"       = "蔥溫玉牛丼套餐",
@@ -88,7 +89,8 @@ recommend1 <- list(
   "price"      = 149
 )
 # recommend1
-} %at% ans
+
+all.equal(recommend1, ans)
 ```
 
 ### 1.3 (1)
@@ -97,17 +99,16 @@ recommend1 <- list(
 ```{r ans13bme}
 # sukiyaMenu
 sukiyaMenu <- list(newPromotion1,recommend1)
-str(sukiyaMenu)
+sukiyaMenu
 ```
 
 ```{r ans13b}
-{
+
 sukiyaMenu <- list(
   newPromotion1,
-  recommend1
-)
-# sukiyaMenu
-} %at% ans
+  recommend1)
+
+
 ```
 
 ### 1.4 (1)
@@ -134,21 +135,22 @@ sukiyaMenu2[[1]]$price <- 120
 
 ### 1.5 (0.8)
 
-
+#### list命名的時候沒有加""結果就很悲爛，還有"category"要是factor啦
 ```{r ans15me}
 # sukiyaMenu3
 sukiyaMenu3 <- list(
-  category = 
+  "category" = 
     c(as.character(sukiyaMenu[[1]]$category),as.character(sukiyaMenu[[2]]$category)),
-  item = c(sukiyaMenu[[1]]$item,sukiyaMenu[[2]]$item),
-  description = c(sukiyaMenu[[1]]$description,sukiyaMenu[[2]]$description),
-  price = c(sukiyaMenu[[1]]$price,sukiyaMenu[[2]]$price)
+  "item" = c(sukiyaMenu[[1]]$item,sukiyaMenu[[2]]$item),
+  "description" = c(sukiyaMenu[[1]]$description,sukiyaMenu[[2]]$description),
+  "price" = c(sukiyaMenu[[1]]$price,sukiyaMenu[[2]]$price)
 )
-str(sukiyaMenu3)
+ans <- sukiyaMenu3
+length(ans)
 ```
 
 ```{r ans15}
-{
+
 sukiyaMenu3 <- purrr::transpose(sukiyaMenu)
 sukiyaMenu3$category <- unlist(sukiyaMenu3$category)
 sukiyaMenu3$item <- unlist(sukiyaMenu3$item)
@@ -156,7 +158,8 @@ sukiyaMenu3$description <- unlist(sukiyaMenu3$description)
 sukiyaMenu3$price <- unlist(sukiyaMenu3$price)
 
 # sukiyaMenu3
-} %at% ans
+
+all.equal(sukiyaMenu3,ans)
 ```
 
 ### 1.6 (0.68)
@@ -166,27 +169,27 @@ sukiyaMenu3$price <- unlist(sukiyaMenu3$price)
 # sukiyaMenu4
 sukiyaMenu4 <- list(
   list(
-    category = sukiyaMenu[[1]]$category,
+    category = sukiyaMenu[[1]]$category,# need to as.character
     options = list(
       item = sukiyaMenu[[1]]$item,
       description = sukiyaMenu[[1]]$description,
       price = sukiyaMenu[[1]]$price
-      )
+      )# constructuring a list use memorial resources, but [[]] doesnt use.
     ),
   list(
-    category = sukiyaMenu[[2]]$category,
+    category = sukiyaMenu[[2]]$category,# need to as.character
     options = list(
       item = sukiyaMenu[[2]]$item,
       description = sukiyaMenu[[2]]$description,
       price = sukiyaMenu[[2]]$price
-    )
+    )# constructuring a list use memorial resources, but [[]] doesnt use.
   )
 )
-str(sukiyaMenu4)
+ans <- sukiyaMenu4
 ```
 
 ```{r ans16}
-{
+
 dish1 <-
   list(
     category=as.character(sukiyaMenu[[1]]$category),
@@ -201,8 +204,7 @@ dish2 <-
 sukiyaMenu4 <- 
   list(dish1, dish2)
 
-# sukiyaMenu4
-} %at% ans
+all.equal(sukiyaMenu4,ans)
 ```
 
 ## 2. Foodpanda Sukiya 2
