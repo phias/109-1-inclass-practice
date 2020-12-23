@@ -32,7 +32,7 @@ library(jsonlite); library(lubridate); library(readr); library(stringr); library
 
 
 
-#### 6.6 regex
+#### 6.6 regex(1)
 
 ```{r data6}
 jsonlite::fromJSON("https://www.dropbox.com/s/w94fz2x0zghcw5v/df_records_6_6.json?dl=1") -> df_records
@@ -41,7 +41,8 @@ jsonlite::fromJSON("https://www.dropbox.com/s/w94fz2x0zghcw5v/df_records_6_6.jso
 ```{r ans66}
 str_extract(df_records$Address,pattern = "(?<=[縣市])[^區鎮鄉市縣]+[區鎮鄉市](?!域)") -> df_records$township
 # df_records$township
-df_records$township
+df_records$township -> myans6
+all.equal(ans6,myans6)
 ```
 
 ### 8. Dispute
@@ -75,7 +76,7 @@ list(
 ```
 
 
-#### 8.1 Reshape one element
+#### 8.1 Reshape one element(1)
 
 ```{r ans81}
 githubResponse_reshape_X <- {
@@ -85,10 +86,13 @@ githubResponse_reshape_X <- {
   githubResponse_reshape_X$questionLabel <- str_subset(contentX,pattern = "ans[:alnum:]{2}")
   githubResponse_reshape_X
 }
+githubResponse_reshape_X -> myans81
+all.equal(ans81,myans81)
 # githubResponse_reshape_X
 ```
 
-#### 8.2 Apply to all
+#### 8.2 Apply to all(0...)
+##### 先全部黏起來再萃取可以一起處理 
 ```{r ans82}
 githubResponse_reshape <- map(
   list(1,2,3),
@@ -100,21 +104,23 @@ githubResponse_reshape <- map(
   githubResponse_reshape_.X
   }
 )
-githubResponse_reshape[[4]] <- map(
+githubResponse_reshape[4] <- map(
   4,
   ~{
     content.X <- githubResponse[[.x]]$content
   githubResponse_reshape_.X <- list()
   githubResponse_reshape_.X$id <- str_extract(content.X[[1]],pattern = "[0-9]{9}")
-  githubResponse_reshape_.X$questionLabel <- str_extract(content.X,pattern = "ans[:alnum:]{2}")
+  githubResponse_reshape_.X$questionLabel <- str_extract_all(content.X,pattern = "ans[:alnum:]{2}")
   githubResponse_reshape_.X
   }
 )
-# githubResponse_reshape
+githubResponse_reshape -> myans82
+
+all.equal(ans82,myans82)
 ```
 
 
-#### 8.3 irregular pattern
+#### 8.3 irregular pattern(1)
 
 ```{r data82}
 X <- sample(1:9,1)
@@ -127,17 +133,15 @@ irregularLabel_x
 ```{r ans83}
 regularSequence <- 
 {
-  a <- str_extract(irregularLabel_x,pattern = "[0-9](?=.)")
-  b <- str_extract(irregularLabel_x,pattern = "(?<=.)[0-9]")
-  c <- str_extract(irregularLabel_x,pattern = "(?<=-)[0-9]")
-  
-  regularSequence <- paste0(str_extract(irregularLabel_x,pattern = "[:alpha:]+"), x, , ))
+  a <- c(10*X+seq(Y,Z))
+  regularSequence <- paste0(str_extract(irregularLabel_x,pattern = "[:alpha:]+"),a)
 }
-regularSequence
+regularSequence -> myans83
+all.equal(ans83,myans83)
 ```
 
 
-### 9. 十二星座
+### 9. 十二星座(0...)
 
 ```{r data9}
 library(lubridate)
@@ -154,8 +158,39 @@ birthday_list <-
 ```
 
 ```{r ans9}
-horoscopesMapped
+# 將所有生日換成相同年份
+new_birthday_list <- ymd(
+  paste0(
+    "2020-",
+    month(birthday_list$date),
+    "-",
+    day(birthday_list$date)
+  )
+)
 
-# horoscopesMapped
+# 製作星座的切點日期
+mon <- unlist(str_extract_all(horoscopes, pattern = "[:digit:]{1,}(?=[月])"))
+day <- unlist(str_extract_all(horoscopes, pattern = "[:digit:]{1,}(?=[日])"))
+cut_date <- ymd(paste0("2020-",mon,"-",day))
+
+# 分類
+###原本的code
+#horoscopesMapped_factor <- cut(new_birthday_list, breaks = cut_date[seq(2,24,2)])
+#breaks出錯了，忘記上下值了
+horoscopesMapped_factor <- cut(new_birthday_list, 
+                               breaks = c(ymd("2020-01-01"), 
+                                          cut_date[seq(1,23,2)], 
+                                          Inf))
+# 更換level
+level <- str_extract(horoscopes, pattern = "[\u4E00-\u9FFF]{2}[座]")
+
+###有出錯，原本是
+#levels(horoscopesMapped_factor) <- c(level[11],level[12],level[1:10])
+###正確是
+levels(horoscopesMapped_factor) <- c(level[10],level[11],level[12],level[1:10])
+horoscopesMapped <- as.character(horoscopesMapped_factor)
+myans9 <- horoscopesMapped
+
+all.equal(myans9,ans92)
 ```
 
