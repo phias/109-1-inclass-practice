@@ -1,0 +1,106 @@
+---
+title: "課堂練習模版"
+author: "phias"
+date: "2020-12-16"
+output: output_format
+params:
+  id: "410674270"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+###讓Rstudio跑python的方法
+```{r}
+# 安裝 reticulate 包 
+install.packages("reticulate")
+# 載入 reticulate 包 
+library(reticulate)
+#確認是否能夠用python
+py_available() # 這個小東西變成true的時候有夠讓人激動
+# 沙盒出來吧
+conda_create("emajor")
+#下載套件包
+conda_install(“r-reticulate”,“numpy”)
+conda_install("r-reticulate","numpy")
+```
+###這個東西每次都要跑
+```{r}
+library(reticulate)
+use_python("/Users/yuning/opt/anaconda3/envs/emajor/bin/python", required = T)
+use_condaenv("emajor")
+```
+
+
+```{r}
+
+## Import package
+###m0
+from apyori import apriori
+# 在r裡面run python的function # 記得最後要加 exit回到r
+repl_python()
+## Data 自行定義數據
+market_data = [['T-Shirt','Pants','Jeans','Jersy','Socks','Basketball','Bottle','Shorts'],
+ ['T-Shirt','Jeans'],
+ ['Jersy','Basketball','Socks','Bottle'],
+ ['Jeans','Pants','Bottle'],
+ ['Shorts','Basketball'],
+ ['Shorts','Jersy'],
+ ['T-Shirt'],
+ ['Basketball','Jersy'],
+ ]
+association_rules = apriori(market_data, min_support=0.2, min_confidence=0.2, min_lift=2, max_length=2)
+association_results = list(association_rules)
+##print(association_results )
+for product in association_results:
+ #print(product) # ex. RelationRecord(items=frozenset({'Basketball', 'Socks'}), support=0.25, ordered_statistics=[OrderedStatistic(items_base=frozenset({'Basketball'}), items_add=frozenset({'Socks'}), confidence=0.5, lift=2.0), OrderedStatistic(items_base=frozenset({'Socks'}), items_add=frozenset({'Basketball'}), confidence=1.0, lift=2.0)])
+ pair = product[0] 
+ ##print(pair) ## ex. frozenset({'Basketball', 'Socks'})
+ products = [x for x in pair]
+ print(products) # ex. ['Basketball', 'Socks']
+ print("Rule: " + products[0] + " →" + products[1])
+ print("Support: " + str(product[1]))
+ print("Lift: " + str(product[2][0][3]))
+ print("==================================")
+ exit
+```
+
+```{python}
+## Import Package
+import pandas as pd
+from mlxtend.frequent_patterns import apriori
+from mlxtend.frequent_patterns import association_rules
+## Data 自行定義數據
+market_data = {
+ 'Transaction ID': [1,2,3,4,5,6,7,8],
+ 'Items':[['T-Shirt','Pants','Jeans','Jersy','Socks','Basketball','Bottle','Shorts'],
+ ['T-Shirt','Jeans'],
+ ['Jersy','Basketball','Socks','Bottle'],
+ ['Jeans','Pants','Bottle'],
+ ['Shorts','Basketball'],
+ ['Shorts','Jersy'],
+ ['T-Shirt'],
+ ['Basketball','Jersy'],
+ ]}
+## 轉成DataFrame
+data = pd.DataFrame(market_data)
+## 讓DataFrame 能呈現的寬度大一點
+pd.options.display.max_colwidth = 100
+## 轉成數值編碼，目前都是字串的組合
+data_id = data.drop('Items', 1)
+data_items = data.Items.str.join(',')
+## 轉成數值
+data_items = data_items.str.get_dummies(',')
+## 接上Transaction ID
+data = data_id.join(data_items)
+## 計算支持度 Support
+Support_items = apriori(data[['T-Shirt','Pants','Jeans','Jersy','Socks','Basketball','Bottle','Shorts']], min_support=0.20, use_colnames = True)
+## 計算關聯規則 Association Rule
+Association_Rules = association_rules(Support_items, metric = 'lift', min_threshold=1)
+
+Association_Rules
+```
+
+
