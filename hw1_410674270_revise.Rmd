@@ -328,7 +328,7 @@ sumChNumbers <- sum(as.integer(fct_chNumbers))
 ### 2.2 (0)
 請計算chNumbersWith0裡數字的加總並存在sumChNumbersWith0物件。
 
-
+#### 為什麼要減掉長度?因為編碼是123...這樣編下去，而我們的數字則是從零開始
 ```{r ans22me}
 # sumChNumbersWith0
 
@@ -340,8 +340,8 @@ chNumbersWith0_facter <-
   )
 # 加總
 sumChNumbersWith0 <- sum(as.integer(chNumbersWith0_facter))
-# 確認輸出內容
-sumChNumbersWith0
+
+
 ```
 
 ```{r ans22}
@@ -369,7 +369,7 @@ sumChNumbersWith0 <- sum(as.integer(fct_chNumbersWith0)) - length(chNumbersWith0
 字串在輸入時，若要cat時在螢幕看起來有換行則必需輸入\n，其中\稱為Escape key，它讓後面字元跳脫了它在電腦的原始含意。
 ```
 
-
+#### cat()無法輸入任何資料，只能顯示資料內容，該題使用錯誤指令
 ```{r ans31me}
 # escapeText
 escapeText <-
@@ -412,7 +412,7 @@ Dear Mary:
 ```
 這裡2020-11-01T10:00:00+0000是UTC時間文字寫法。Mary及2020-11-01T10:00:00+0000要依你抽出的student內容變動而能變動，且每行中都有空一行。（hint: $，paste0）
 
-
+####一樣是錯誤的指令，cat()無法輸入任何資料
 ```{r ans32me}
 # dearStudent
 dearStudent <-
