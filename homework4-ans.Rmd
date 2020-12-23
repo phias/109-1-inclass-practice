@@ -1,0 +1,213 @@
+---
+title: "homework 4"
+output: html_document
+params:
+  studentName: "你的名字"
+  studentID: "你的學號"
+---
+
+# 注意事項
+
+存檔與填寫注意事項：
+
+假設你叫王小明，學號41078392。
+
+  1. 有些同學可能家裡電腦不是utf-8設定，為防萬一，請於存檔時使用：File > save with enconding, 然後選utf-8
+
+  2. 本文檔開始的Frontmatter中，studentID（即key）其value目前為"你的學號"，以上面學號為例則必需改成"41078392"；而studentName（key）其value目前為"你的名字"，以上面名字為例則必需改成"王小明"
+  
+> 每次作業滿分10分：有寫作業於期限內上傳得3分，剩餘7分依作業準確率決定最後得分多寡，除非該題另有規定。
+
+> 前述存檔與frontmatter要求缺任何一個則扣1分。
+
+請先執以下code chunk, 引入所需packages，答案禁止引用其他套件（Package）。
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, eval=F)
+library(jsonlite); library(lubridate); library(readr); library(stringr); library(purrr)
+library(econDS)
+ans <- new.env()
+```
+
+# 題目
+
+完成第4章綜合練習以下幾題：
+
+### 4 Image
+
+```{r data4, eval=T, fig.show='hide'}
+library(magick)
+# windows user needs this step
+download.file("https://www.dropbox.com/s/7ab61bq92s9yt4e/ntpu.png?dl=1",destfile = "./ntpu.png",mode = "wb")
+# read original image file
+ntpuLogo <- image_read("./ntpu.png")
+# convert image into a matrix of color codes (raster matrix)
+ntpuLogoRaster <- as.raster(ntpuLogo)
+
+# plot raster image
+plot(ntpuLogoRaster)
+```
+
+
+#### 4.1 Red frame
+
+
+```{r ans41}
+{
+ntpuLogoRaster_redFrame <- ntpuLogoRaster
+dim(ntpuLogoRaster_redFrame)
+ntpuLogoRaster_redFrame[, c(1,300)] <- "red"
+ntpuLogoRaster_redFrame[c(1,183), ] <- "red"
+plot(ntpuLogoRaster_redFrame)
+# ntpuLogoRaster_redFrame
+} %at% ans
+```
+
+#### 4.2 Create grey rectangular
+
+```{r ans42}
+{
+ntpuLogoRaster_greySelect <- ntpuLogoRaster
+ntpuLogoRaster_greySelect[105:145,55:95] <- "grey"
+
+plot(ntpuLogoRaster_greySelect)
+# ntpuLogoRaster_greySelect
+} %at% ans
+```
+
+#### 4.3 Blue falcon 
+
+```{r ans43}
+{
+ntpuLogoRaster_blue <- ntpuLogoRaster
+{
+  # put your code inside here
+  whichIsNotTransparent <-
+    str_which(
+      as.matrix(ntpuLogoRaster_blue),
+      "transparent", negate=T
+    )
+}
+ntpuLogoRaster_blue[whichIsNotTransparent] <- "blue"
+plot(ntpuLogoRaster_blue)
+# whichIsNotTransparent
+} %at% ans
+```
+
+### 6. Help spot
+[婦幼安全警示點](https://data.gov.tw/dataset/6247)
+
+Run the following program to get the data object **hotSpot**
+```{r data6}
+hotSpot <- jsonlite::fromJSON(
+  "https://www.dropbox.com/s/77awvomxaseg8b3/helpSpot.json?dl=1", simplifyDataFrame = F
+)
+```
+
+
+#### 6.1 Delete Record
+
+```{r ans61}
+{
+recordsList ={
+  recordsList <- 
+    hotSpot$result$records
+  recordsList[[1]] <- NULL
+  recordsList
+}
+# recordsList
+} %at% ans
+```
+
+#### 6.2 list to data frame
+
+```{r ans62}
+{
+df_records = {
+  records <-
+    purrr::transpose(recordsList)
+  records$No <- unlist(records$No)
+  records$Address <- unlist(records$Address)
+  records$DeptNm <-
+    unlist(records$DeptNm)
+  records$BranchNm <-
+    unlist(records$BranchNm)
+  records$Contact <-
+    unlist(records$Contact)
+  df_records <- as.data.frame(records)
+  df_records
+}
+# R自4.0開始增加了list2DF函數
+#  只要list裡每個元素等長，即始元素class不屬atomic vector, 它還是會產生data.frame且有正確的column數目，但每個column class還是list, 如要atomic vector依然要一一unlist. 
+df_records4.0 = {
+  records <-
+    purrr::transpose(recordsList)
+  df_records4.0 <- list2DF(records)
+  map_dfc(df_records4.0, unlist) 
+}
+# df_records
+} %at% ans
+```
+
+#### 6.3
+
+```{r ans63}
+{
+df_records$DeptNm <- factor(
+  df_records$DeptNm
+)
+df_records$BranchNm <- factor(
+  df_records$BranchNm
+)
+# df_records[c("DeptNm", "BranchNm")]
+} %at% ans
+```
+
+#### 6.4
+
+```{r ans64}
+{
+{
+  regexPattern = "[\u4E00-\u9FFF]{2}[縣市]"
+  levels(df_records$DeptNm) -> DeptNmLevels
+  str_extract(
+    DeptNmLevels,
+    pattern=regexPattern
+  ) -> countyLevels
+  countyLevels
+
+  df_records$county <- df_records$DeptNm
+  levels(df_records$county) <- countyLevels
+  df_records
+}
+
+# df_records$county
+} %at% ans
+```
+
+#### 6.5
+
+```{r ans65}
+{
+{
+  north= c("臺北市", "新北市", "基隆市", 
+    "新竹市", "桃園市", "新竹縣", "宜蘭縣")
+  middle= c("臺中市", "苗栗縣", "彰化縣", "南投縣", "雲林縣")
+  south= c("高雄市", "臺南市", "嘉義市", "嘉義縣", "屏東縣", "澎湖縣")
+  east= c("花蓮縣", "臺東縣")
+  levelSequence=c(north, middle, south, east)   
+  df_records$zone <- df_records$county <- factor(
+    df_records$county, levels=levelSequence
+  )
+  levels(df_records$zone) <- 
+    c(rep("北部地區",length(north)),
+      rep("中部地區",length(middle)),
+      rep("南部地區",length(south)),
+      rep("東部地區",length(east)))
+  
+}
+# df_records$zone
+} %at% ans
+```
+
+
+
