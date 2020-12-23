@@ -1,0 +1,298 @@
+ ---
+title: "homework 5"
+output: html_document
+params:
+  studentName: "你的名字"
+  studentID: "你的學號"
+---
+
+# 注意事項
+
+存檔與填寫注意事項：
+
+假設你叫王小明，學號41078392。
+
+  1. 有些同學可能家裡電腦不是utf-8設定，為防萬一，請於存檔時使用：File > save with enconding, 然後選utf-8
+
+  2. 本文檔開始的Frontmatter中，studentID（即key）其value目前為"你的學號"，以上面學號為例則必需改成"41078392"；而studentName（key）其value目前為"你的名字"，以上面名字為例則必需改成"王小明"
+  
+> 每次作業滿分10分：有寫作業於期限內上傳得3分，剩餘7分依作業準確率決定最後得分多寡，除非該題另有規定。
+
+> 前述存檔與frontmatter要求缺任何一個則扣1分。
+
+請先執以下code chunk, 引入所需packages，答案禁止引用其他套件（Package）。
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, eval=F)
+library(jsonlite); library(lubridate); library(readr); library(stringr); library(purrr)
+```
+
+# 題目
+
+完成第4章綜合練習以下幾題：
+
+
+
+#### 6.6 regex
+
+```{r data6}
+jsonlite::fromJSON("https://www.dropbox.com/s/w94fz2x0zghcw5v/df_records_6_6.json?dl=1") -> df_records
+```
+
+```{r ans66, version=1}
+str_extract(df_records$Address, string = ., pattern = "(?<=[縣市])[^區鎮鄉市]{1,3}[區鎮鄉市]") ->  df_records$township
+
+df_records$township
+```
+
+```{r ans66, version=2}
+df_records$township <- 
+{
+  unique(df_records$county) -> countyLevels
+  # 適度使用paste0可以協助完成出象眾多的字組卷帶
+    countyReel = paste0(
+    "(",
+    paste0(countyLevels, collapse="|"),
+    ")")
+    
+  # 目標描述：X區鎮鄉市 - XXX區鎮鄉市，但X不能有區鎮鄉市 "[^區鎮鄉市]{1,3}[區鎮鄉市]"
+  # 目標定位：用以知的第一行政區形成字組卷帶(?<=",countyReel,")。
+  regexPattern =
+    paste0(
+      "(?<=",countyReel,")[^區鎮鄉市]{1,3}[區鎮鄉市]"
+    )
+  df_records$township <- str_extract(
+    df_records$Address,
+    pattern = regexPattern
+  )
+ }
+df_records$township -> ans6
+```
+
+
+### 8. Dispute
+
+```{r data81}
+githubResponse <- 
+list(
+  list(
+    content=c("學號: 410674084",
+              "ans15",
+              "答案和正確解答相同卻被扣分。")
+  ),
+  list(
+    content=c("學號410978226",
+              "ans22, ans23",
+              "我答錯了卻沒被扣到分。")
+  ),
+  list(
+    content=c("我的學號是410888888",
+              "ans5s",
+              "答案步驟應該是錯的，我的才是對的",
+              "",
+              "ans41",
+              "題目造成我誤解。")
+  ),
+  list(
+    content=c("我學號410687012: ans21, ans33有問題",
+              "ans41給的數字429283910似乎有問題")
+  )
+)
+```
+
+
+#### 8.1 Reshape one element
+
+```{r ans81}
+githubResponse_reshape_X <- {
+  contentX <- githubResponse[[1]]$content
+  contentX <- paste0(contentX, collapse="\n")
+  
+  # 學號目標：0-9數字有9位數
+  contentX
+  idX <- str_extract_all(contentX, "[0-9]{9}")
+  # ans label目標：ans後面接不確定幾位數的數字它再後面有可能會有英文字母（大小寫均可能，如"ans5s"）
+  labelsX <- str_extract_all(contentX, "ans[0-9]+[:alpha:]*")  
+  list(
+    id=unlist(idX),
+    questionLabel=unlist(labelsX)
+  )
+}
+githubResponse_reshape_X -> ans81
+```
+
+
+#### 8.2 Apply to all
+
+```{r ans82}
+githubResponse_reshape <- 
+  map(
+    githubResponse,
+    # 若8.1可以適用所有comment判斷, 則可以貼過來形成formula, 在適當位置使用.x notation
+    ~{
+      contentX <- .x$content
+      contentX <- paste0(contentX, collapse="\n")
+      # 修正：針對"ans41給的數字429283910似乎有問題"的數字被取出成學號之可能，使用目標定位
+      # 目標定位：目標前面有一串文字，寫著「學號XXX： 」或「我的學號」之類。「學號」二字會有，但學號到9位數字中間不排除有任何中文字及半全形"："及空格（\\s）-- 大膽設限應該在5個字內。Regex為"(?<=學號[[\u4E00-\u9FFF]:：\\s]{0,5})目標"
+      idX <- str_extract_all(contentX, "(?<=學號[[\u4E00-\u9FFF]:：\\s]{0,5})[0-9]{9}")
+      # 目標: ans接數字，幾位數不一定，後有可能再接著字母。
+      labelsX <- str_extract_all(contentX, "ans[0-9]+[a-zA-Z]*")  
+      list(
+        id=unlist(idX),
+        questionLabel=unlist(labelsX)
+      )
+    }
+  )
+githubResponse_reshape -> ans82
+```
+
+#### 8.3 irregular pattern
+
+```{r data82}
+X <- sample(1:9,1)
+Y <- sample(1:5,1)
+Z <- sample(6:9,1)
+irregularLabel_x <- paste0("ans",X, ".",Y,"-",Z)
+irregularLabel_x
+```
+
+
+```{r ans83, version=1}
+regularSequence <- 
+{
+  irregularLabel_x %>% str_extract_all(pattern = "[:digit:]") -> Numbers
+  
+  numberSequence <- 
+  paste0(Numbers[[1]][1], #the Section Number
+         seq(as.integer(Numbers[[1]][2]),
+             as.integer(Numbers[[1]][3]))) #the sequence from the first question to the last one.
+  
+  paste0("ans", numberSequence)
+}
+regularSequence; numberSequence # two possible answers
+```
+
+```{r ans83, version=2}
+regularSequence <-
+{
+  # 常見irregular寫法是X.Y-Z, 以.或-來切成X Y Z三個值，
+  # 目標為分割符號., -: [.-] 不正確，因為.有其他的regex意思要escape它，改成[\.-]也不行因為\有其他的regex意義要再進一步escape它，改成[\\.-] (要完全熟記原則不容易，直接查stringr cheatsheet比較快)
+  irregularSplit <-
+    unlist(str_split(irregularLabel_x,"[\\.-]")) 
+  paste0(
+    irregularSplit[[1]], 
+    as.integer(irregularSplit[[2]]):as.integer(irregularSplit[[3]]))
+}
+regularSequence -> ans83
+```
+
+
+### 9. 十二星座
+
+```{r data9}
+library(lubridate)
+jsonlite::fromJSON(
+"https://www.dropbox.com/s/qmgurf88a2qdvzl/horoscopes.json?dl=1") -> horoscopes
+birthday_list <-
+  list(
+    date=sample(
+        seq(ymd_hm("2010-01-02 00:00"),
+            ymd_hm("2016-01-01 00:00"), by="hour"),
+        10000
+      )
+  )
+```
+
+
+```{r ans9, version=1}
+horoscopesMapped <- {
+  str_bdates <-
+    str_replace(
+      date(birthday_list$date),
+      "^[0-9]{4}",
+      "2020"
+    )
+
+  # 粹取horoscopes每個星座，及X日Y月中的X及Y
+  str_signs_numbers <-
+    str_extract_all(horoscopes, "([:graph:]{2}座|[0-9]+)")
+
+  # 取得所有星座startingDate日期成2020-X-Y以Date class存
+  breakMiddleMapping <- {
+    str_sign_beginningDate <-
+      unlist(map(
+        seq_along(str_signs_numbers),
+        ~ paste0(
+          "2020-",
+          str_signs_numbers[[.x]][[2]], "-",
+          str_signs_numbers[[.x]][[3]]
+        )
+      ))
+    ymd(str_sign_beginningDate)
+  }
+
+  cut(bdates,
+    breaks = c(
+      ymd("2020-01-01"), # 確保所有bdates都會包含進來
+      breakMiddleMapping, # 水瓶 - 摩羯的starting date
+      Inf
+    ) # 確保所有bdates都會包含進來
+  ) -> bdates_cutted
+
+  horoscopes_for_allBreaks <-
+    unlist(map(str_signs_numbers, ~ .x[[1]]))
+
+  # cut因為是處理可排序資料，它所形成的類別也會是可排序的，所以levels會由小排到大，故我們的星座次序也要重排
+  names(breakMiddleMapping) <- horoscopes_for_allBreaks
+  newLevels <- names(sort(breakMiddleMapping))
+  levels(bdates_cutted) <-
+    c(
+      "摩羯座", # 因為這星座跨年，所以要算2020-01-01這組的level name
+      newLevels
+    )
+
+  horoscopesMapped <- as.character(bdates_cutted)
+}
+horoscopesMapped -> ans91
+```
+
+```{r ans9, version=2}
+horoscopesMapped <- {
+  str_bdates <- str_replace(date(birthday_list$date),"^[0-9]{4}", "2020")
+  bdates <- lubridate::ymd(str_bdates)
+  
+  # 粹取horoscopes每個星座，及X日Y月中的X及Y
+  str_signs_numbers <- 
+    str_extract_all(horoscopes, "[:graph:]{2}座|[0-9]+")
+  
+  # 取得所有星座startingDate日期成2020-X-Y以Date class存
+  breakMiddleMapping <- {
+    str_sign_beginningDate <- 
+      map_chr(
+        seq_along(str_signs_numbers),
+        ~paste0("2020-", 
+             str_signs_numbers[[.x]][[2]], "-",
+             str_signs_numbers[[.x]][[3]])
+      )
+    ymd(str_sign_beginningDate)
+  }
+  
+  cut(bdates, 
+      breaks = c(ymd("2020-01-01"), 
+                 breakMiddleMapping, #水瓶 - 摩羯的starting date
+                 Inf) 
+      ) -> bdates_cutted
+  
+  horoscopes_for_allBreaks <- 
+    map_chr(str_signs_numbers, ~.x[[1]])
+    
+  levels(bdates_cutted) <- 
+    c("摩羯座", # 因為這星座跨年，所以要算2020-01-01這組的level name
+      horoscopes_for_allBreaks[order(breakMiddleMapping)] # order()會告訴你若breakMiddleMapping元素值要由小排到大，那它的順序要怎麼擺。用它來把星座依startingDate順序排好 （cut因為是處理可排序資料，它所形成的類別也會是可排序的，所以levels會由小排到大，故我們的星座次序也要重排）
+      )
+  
+  horoscopesMapped <- as.character(bdates_cutted)
+}
+horoscopesMapped ->ans92
+
+```
+
