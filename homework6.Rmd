@@ -1,0 +1,181 @@
+ ---
+title: "homework 6"
+output: html_document
+params:
+  studentName: "劉于寧"
+  studentID: "410674270"
+---
+
+# 注意事項
+
+存檔與填寫注意事項：
+
+假設你叫王小明，學號41078392。
+
+  1. 有些同學可能家裡電腦不是utf-8設定，為防萬一，請於存檔時使用：File > save with enconding, 然後選utf-8
+
+  2. 本文檔開始的Frontmatter中，studentID（即key）其value目前為"你的學號"，以上面學號為例則必需改成"41078392"；而studentName（key）其value目前為"你的名字"，以上面名字為例則必需改成"王小明"
+  
+> 每次作業滿分10分：有寫作業於期限內上傳得3分，剩餘7分依作業準確率決定最後得分多寡，除非該題另有規定。
+
+> 前述存檔與frontmatter要求缺任何一個則扣1分。
+
+請先執以下code chunk, 引入所需packages，答案禁止引用其他套件（Package）。
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, eval=F)
+library(jsonlite); library(lubridate); library(readr); library(stringr); library(purrr)
+```
+
+# 題目
+
+完成第5章綜合練習以下幾題：
+
+### 3. 交友軟體{-}
+
+```{r, echo=T, eval=FALSE}
+members <- jsonlite::fromJSON("https://www.dropbox.com/s/olji1q29t2autec/ntpumeetMembers.json?dl=1", simplifyDataFrame = F)
+memberIds <- purrr::map_chr(members, ~{.x[["memberID"]]})
+```
+
+
+#### 3.1 Member login{-}
+
+> global environment has: **members**, **memberIds**
+
+
+Complete the **appLogin** function design:
+
+```{r ans31, echo=F}
+
+appLogin <- function(memberID, currentGPS){
+  memberID
+  currentGPS
+}
+
+# appLogin
+```
+
+
+#### 3.2 Refine{-}
+
+
+> global environment has: **members**, **memberIds**, **appLogin**, **currentUser**
+
+
+```{r data32, eval=F, echo=T}
+otherMembers <- sample(memberIds[which(memberIds != memberID)],100)
+```
+
+
+```{r ans32, echo=F, eval=F}
+# refine_byLikesBlocks
+```
+
+#### 3.3 Refresh{-}
+
+
+> global environment has: **members**, **memberIds**, **appLogin**, **currentUser**, **refine_byLikesBlocks**
+
+
+```{r ans33, eval=F, echo=F}
+# refresh
+```
+
+### 4. 故宮畫藏查詢App{-}
+
+執行以下程式下載200幅故宮中國畫作資訊(**painting**):
+```{r data4, echo=T}
+jsonlite::fromJSON("https://www.dropbox.com/s/ttw2j7nitc35vfx/palaceMuseumPainting.json?dl=1", simplifyDataFrame = F) -> painting
+```
+
+#### 4.1 Full list of the painters{-}
+
+```{r ans41, echo=F}
+# allCreators
+```
+
+#### 4.2 Creator collection{-}
+
+Consider **creatorX**
+```{r data42, echo=TRUE}
+creatorX <- "仇英" # 改題時名稱會隨機取出
+```
+
+```{r ans42, echo=F}
+# creatorX_artworks
+```
+
+#### 4.3 Creator-based Journey{-}
+
+```{r ans43, echo=F}
+# get_creatorSeries
+```
+
+
+```{r, echo=T}
+get_creatorSeries("王淵")
+```
+
+### 加分題
+
+只有當非加分題的finalGrade > 6時，加分題才會加分。每小題「完全答對」加finalGrade一分，finalGrade達10分即不再加。
+
+#### 4.4 User interaction
+
+```{r ans44, echo=F}
+# generate_creatorInteractiveSession
+```
+
+```{r, echo=T}
+generate_creatorInteractiveSession("王淵") -> results
+results$`元王淵蓮池禽戲圖　卷`$browse()
+results$`明仇英仿趙伯駒煉丹圖　軸`$browse()
+```
+
+### 1. Taylor Expansion{-}
+
+#### 1.1 f'(x_0) {-}
+
+
+```{r ans11, echo=F}
+# df
+```
+
+#### 1.2 save guard your function{-}
+
+```{r ans12, echo=F}
+# df_assert
+```
+
+
+#### 1.3 f''(x_0){-}
+
+
+```{r ans13, echo=F}
+# d2f
+```
+
+#### 1.4 ftb{-}
+
+```{r ans14, echo=F}
+# ftb
+```
+
+***
+
+How good is Taylor expansion of degree 2 approximation?
+
+```{r}
+originF <- function(x) sin(x)+sqrt(5*x^2-x+1)*exp(x)
+```
+
+```{r}
+originF(0.0002) # 1.0003
+ftb(originF, 0.0002) # 1.0003
+
+originF(0.02) # 1.030977
+ftb(originF, 0.02) # 1.030951
+```
+
+
+
