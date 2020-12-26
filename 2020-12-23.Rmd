@@ -1,0 +1,95 @@
+---
+title: "課堂練習模版"
+author: "phias"
+date: "2020-12-23"
+output: output_format
+params:
+  id: "410674270"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+```{r}
+# Given some information
+R <- 0.09
+M <- 10000
+T <- 3
+# What I need to do
+PDV <- 
+{
+  M/(1+R)**T
+}
+PDV
+```
+
+# function
+## 製作出額外環境來執行
+```{r}
+getPDV <- function(R,M,T) 
+{
+  M/(1+R)**T
+}
+getPDV(R=0.09, T=3, M=10000)
+```
+
+```{r}
+debug(getPDV) 
+getPDV(R=0.09, T=3, M=10000) 
+undebug(getPDV)
+```
+```{r}
+# 查詢函數formals arguments要求
+formals(getPDV)
+# 查詢函數主體
+body(getPDV)
+# body執行時若有物件不存在execution environment時要去找尋的environment
+environment(getPDV)
+```
+```{r}
+# Given some information
+T <- 3
+# What I need to do
+getPDV2 <- function(R,M){
+  M/(1+R)**T
+}
+
+getPDV2(R=0.12, M=50000)
+debug(getPDV2)
+getPDV2(R=0.12, M=50000)
+undebug(getPDV2)
+```
+
+```{r}
+globalX <- c(2,5)
+testfun <- function(){
+  globalX[[2]] <- -1
+  invisible(3+globalX)
+}
+testfun()
+globalX
+```
+
+
+
+### hw6 3.1任務： 抽出屬於memberId的list of 7 會員資料，同時用currectGPS 來更新會員資料裡的latestGPS
+```{r}
+# 用map去pick正確的menber資料
+
+# 用currentGPS更新
+
+```
+### hw6 3.2任務： 去除otherMembers中使用者block，再把剩下的屬於likes移到字串向量前面
+```{r}
+# 去除otherMen中使用者block
+menber_noBlocks <-{
+  
+}
+# 再把剩下的屬於likes移到字串向量前面
+menbers_likeFirst <-{
+  
+}
+```
+
