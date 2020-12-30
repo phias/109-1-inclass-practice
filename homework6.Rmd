@@ -46,15 +46,36 @@ memberIds <- purrr::map_chr(members, ~{.x[["memberID"]]})
 Complete the **appLogin** function design:
 
 ```{r ans31, echo=F}
-
+# 基於memberId取出users' login information
 appLogin <- function(memberID, currentGPS){
-  memberID
-  currentGPS
+  # userId要在memberIds中，沒有的話顯示錯誤
+  assertthat::assert_that(memberID %in% memberIds, 
+                          msg="Error. There is not this ID.")
+  # 找到users' login information的位置並取出
+  userInfo <- purrr::map(str_which(memberIds, memberID), ~{members[[.x]]})
+  userInfo <- userInfo[[1]][1:7]
+  # update latestGPS
+  userInfo$latestGPS <- currentGPS
+  list(
+    memberID=userInfo$memberID,
+    currentGPS=userInfo$latestGPS
+  )
 }
 
-# appLogin
 ```
 
+```{r}
+memberID <- memberIds[[582]]
+currentGPS <-
+  c(
+    sample(
+      seq(24.94062,24.94788, by=0.00001),1),
+    sample(
+      seq(121.36293,121.37222, by=0.00001),1)
+    )
+currentUser <- appLogin(memberID, currentGPS)
+currentUser <- members[[582]]
+```
 
 #### 3.2 Refine{-}
 
@@ -68,6 +89,18 @@ otherMembers <- sample(memberIds[which(memberIds != memberID)],100)
 
 
 ```{r ans32, echo=F, eval=F}
+refine_byLikesBlocks <- function(otherMembers){
+  # 去除otherMen中使用者block
+  menber_noBlocks <-{
+    userInfo <- purrr::map(str_which(memberIds, pattern = ), ~{members[[.x]]})
+   
+  }
+  # 再把剩下的屬於likes移到字串向量前面
+  menbers_likeFirst <-{
+    
+  }
+}
+
 # refine_byLikesBlocks
 ```
 
@@ -78,6 +111,10 @@ otherMembers <- sample(memberIds[which(memberIds != memberID)],100)
 
 
 ```{r ans33, eval=F, echo=F}
+refresh <- function(currentUser){
+  
+}
+
 # refresh
 ```
 
@@ -91,6 +128,14 @@ jsonlite::fromJSON("https://www.dropbox.com/s/ttw2j7nitc35vfx/palaceMuseumPainti
 #### 4.1 Full list of the painters{-}
 
 ```{r ans41, echo=F}
+allCreators <- {
+tr_painting <- purrr::transpose(painting)
+tr_tr_painting <- purrr::transpose(tr_painting[["DACatalog"]])
+tr_tr_painting <- tr_tr_painting[[2]]
+tr_tr_tr_painting <- purrr::transpose(tr_tr_painting)
+tr_tr_tr_painting[["Creator"]][c(3,14,22,44,97,98,143,195)] <-"無名氏"
+tr_tr_tr_painting[["Creator"]]
+}
 # allCreators
 ```
 
@@ -102,6 +147,7 @@ creatorX <- "仇英" # 改題時名稱會隨機取出
 ```
 
 ```{r ans42, echo=F}
+
 # creatorX_artworks
 ```
 
@@ -138,12 +184,26 @@ results$`明仇英仿趙伯駒煉丹圖　軸`$browse()
 
 
 ```{r ans11, echo=F}
+df <- function(f,x_0=0, epsilon=0.00001){
+  (f(x_0+epsilon)-f(x_0))/epsilon
+}
 # df
 ```
 
 #### 1.2 save guard your function{-}
 
 ```{r ans12, echo=F}
+df_assert <- function(f,x_0=0, epsilon=0.00001){
+  assertthat::assert_that(
+    is.function(f),
+    msg="Input f is not a function."
+  )
+  assertthat::assert_that(
+    is.primitive(f),
+    msg = "Sorry the current function deals with only one-dimensional input function."
+  )
+  (f(x_0+epsilon)-f(x_0))/epsilon
+}
 # df_assert
 ```
 
