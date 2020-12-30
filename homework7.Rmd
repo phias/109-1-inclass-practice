@@ -1,0 +1,126 @@
+ ---
+title: "homework 7"
+output: html_document
+params:
+  studentName: "劉于寧"
+  studentID: "410674270"
+---
+
+# 注意事項
+
+存檔與填寫注意事項：
+
+假設你叫王小明，學號41078392。
+
+  1. 有些同學可能家裡電腦不是utf-8設定，為防萬一，請於存檔時使用：File > save with enconding, 然後選utf-8
+
+  2. 本文檔開始的Frontmatter中，studentID（即key）其value目前為"你的學號"，以上面學號為例則必需改成"41078392"；而studentName（key）其value目前為"你的名字"，以上面名字為例則必需改成"王小明"
+  
+> 每次作業滿分10分：有寫作業於期限內上傳得3分，剩餘7分依作業準確率決定最後得分多寡，除非該題另有規定。
+
+> 前述存檔與frontmatter要求缺任何一個則扣1分。
+
+請先執以下code chunk, 引入所需packages，答案禁止引用其他套件（Package）。
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, eval=F)
+library(jsonlite); library(lubridate); library(readr); library(stringr); library(purrr)
+```
+
+# 題目
+
+完成第5章綜合練習以下幾題：
+
+### 4. 故宮畫藏查詢App{-}
+
+執行以下程式下載200幅故宮中國畫作資訊(**painting**):
+```{r data4, echo=T}
+jsonlite::fromJSON("https://www.dropbox.com/s/ttw2j7nitc35vfx/palaceMuseumPainting.json?dl=1", simplifyDataFrame = F) -> painting
+```
+
+#### 4.5 Dynasties Identification{-}
+
+```{r}
+get_painting_dynasty <- function(PaintingName){
+
+}
+
+```
+
+#### 4.6 Subjects Identification{-}
+
+```{r}
+get_painting_subjects <- function(PaintingName){
+  
+}
+```
+
+
+#### 4.7 Special 
+##### 會是4.5、4.5的整合
+```{r}
+get_painting_withDS <- function(PaintingName){
+  
+}
+```
+
+#### 4.8 Guide to Dynasty-based Exhibition{-}
+
+```{r}
+get_instruction <- function(PaintingName){
+  
+}
+```
+
+### 5. 交友軟體改良{-}
+
+This exercise is to help you understand function environment. First, run the following code to clean your Global environment
+
+```{r, echo=TRUE}
+rm(list=ls())
+```
+
+Second, execute the following chunk to obtain R script file "NTPUmeetCore.R"
+```{r, echo=TRUE}
+# download NTPUmeetCore.R script file
+xfun::download_file("https://www.dropbox.com/s/54khnc8k607amw1/NTPUmeetCore.R?dl=1")
+# open the file to take a look
+file.edit("./NTPUmeetCore.R")
+```
+
+When NTPUmeet is launched, "NTPUmeetCore.R" is sourced into user's cellphone global environment. Populate it with various objects including data and functions.
+
+```{r, echo=TRUE}
+# source the script to you global environment
+source("./NTPUmeetCore.R")
+```
+
+#### 5.3 like
+
+```{r ans53, echo=T}
+like <- function(currentUser, member2like){
+
+
+
+  return(currentUser)
+}
+```
+
+### 加分題
+
+只有當非加分題的finalGrade > 6時，加分題才會加分。每小題「完全答對」加finalGrade一分，finalGrade達10分即不再加。
+
+#### 4.9 User interaction
+
+```{r ans44, echo=F}
+get_special_instruction <- function(PaintingName){
+  
+}
+```
+
+### 6. Rock-Paper-Scissor{-}
+
+```{r}
+gameStart <- function(){
+  
+}
+```
