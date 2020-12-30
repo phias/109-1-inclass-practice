@@ -72,6 +72,66 @@ testfun()
 globalX
 ```
 
+```{r}
+testFun <- function(){
+  a <-2
+  b <- 5
+  return(a+b)
+}
+testFun()
+```
+
+```{r}
+testFun <- function(){
+  a <-2
+  b <- 5
+  invisible(a+b)
+}
+testFun()
+output <- testFun()
+output
+```
+
+```{r}
+userBirthday <- ymd("1998-10-30")
+
+get_userHoroscopes <- function(userBirthday)
+  {
+    # 取得生日年份
+    birthYear <- {
+      year(userBirthday)
+    }
+    
+    # 取得生日年份的12星座起始日期
+    horoscopeStartingDateInBirthYear <- {
+      str_startingDate <- 
+        paste0(birthYear,"-",horoscopes$sdate)
+      ymd(str_startingDate)
+    }
+    
+    # 切割生日成為12星座區間
+    cutBirthdayByStartingDate <- {
+      cut(userBirthday,
+          breaks =
+            c(
+              ymd(
+                paste0(birthYear, "-01-01")
+              ),
+              horoscopeStartingDateInBirthYear,
+              Inf
+            )
+          )
+    }
+    
+    # 改變星座區間類別名稱
+    birthdayCutRenameLevels <- {
+      c("摩羯座", horoscopes$sign)
+    }
+    levels(cutBirthdayByStartingDate) <- birthdayCutRenameLevels
+    
+    as.character(cutBirthdayByStartingDate)
+  }
+```
 
 
 ### hw6 3.1任務： 抽出屬於memberId的list of 7 會員資料，同時用currectGPS 來更新會員資料裡的latestGPS
