@@ -48,7 +48,7 @@ get_painting_dynasty <- function(PaintingName){
   map_painting_Meta <- purrr::map(tr_painting_Meta,unlist)
   assertthat::assert_that(PaintingName %in% map_painting_Meta$Title, msg = "There is not this painting.")
   # 取得畫的朝代
-  stringr::str_extract(map_painting_Meta$Title, [\u4E00-\u9FFF])
+  stringr::str_extract(map_painting_Meta$Title, pattern = "(?<=[:punct:])[\u4E00-\u9FFF]{1}")
 }
 
 ```
