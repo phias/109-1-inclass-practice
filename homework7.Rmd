@@ -41,7 +41,14 @@ jsonlite::fromJSON("https://www.dropbox.com/s/ttw2j7nitc35vfx/palaceMuseumPainti
 
 ```{r}
 get_painting_dynasty <- function(PaintingName){
-
+  # 輸入畫名，確定有這個畫
+  tr_painting <- purrr::transpose(painting)
+  tr_tr_painting <- purrr::transpose(tr_painting$DACatalog)
+  tr_painting_Meta <- purrr::transpose(tr_tr_painting$MetaDesc)
+  map_painting_Meta <- purrr::map(tr_painting_Meta,unlist)
+  assertthat::assert_that(PaintingName %in% map_painting_Meta$Title, msg = "There is not this painting.")
+  # 取得畫的朝代
+  stringr::str_extract(map_painting_Meta$Title, [\u4E00-\u9FFF])
 }
 
 ```
