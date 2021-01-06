@@ -1,0 +1,161 @@
+ ---
+title: "homework 8"
+output: html_document
+params:
+  studentName: "你的名字"
+  studentID: "你的學號"
+---
+
+# 注意事項
+
+存檔與填寫注意事項：
+
+假設你叫王小明，學號41078392。
+
+  1. 有些同學可能家裡電腦不是utf-8設定，為防萬一，請於存檔時使用：File > save with enconding, 然後選utf-8
+
+  2. 本文檔開始的Frontmatter中，studentID（即key）其value目前為"你的學號"，以上面學號為例則必需改成"41078392"；而studentName（key）其value目前為"你的名字"，以上面名字為例則必需改成"王小明"
+  
+> 每次作業滿分10分：有寫作業於期限內上傳得3分，剩餘7分依作業準確率決定最後得分多寡，除非該題另有規定。
+
+> 前述存檔與frontmatter要求缺任何一個則扣1分。
+
+請先執以下code chunk, 引入所需packages，答案禁止引用其他套件（Package）。
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, eval=F)
+library(jsonlite); library(lubridate); library(readr); library(stringr); library(purrr); library(glue)
+```
+
+# 題目
+
+完成第5章綜合練習以下幾題：
+
+
+### 12. Subscripts{-}
+
+
+#### 12.1 Dimension aspect{-}
+
+```{r data121, echo=TRUE}
+set.seed(5928)
+n <- sample(3:7, 1) 
+sampleMatrix <- matrix(sample(1:100, n^2), n, n)
+sampleMatrix
+```
+
+
+```{r ans121, echo=T}
+# 任務前提
+n <- dim(sampleMatrix)[[1]]
+diagX <- vector("numeric", n)
+# 任務目標: 縮小任務，只一個i值, 
+i <- 1
+
+diagX[[i]] <- 
+  
+# diagX
+```
+
+#### 12.2 Lower triangular dimension{-}
+
+```{r ans122, echo=TRUE}
+# 任務前提
+n <- dim(sampleMatrix)[[1]]
+# 任務目標(縮小版): i <- 3，找出所有x_{3j}, where j <= 3
+i <- 3
+lowerTriX <- vector("list", n)
+lowerTriX[[i]] <- 
+  {
+    # 任務前提: 給定前面的i
+    # 任務目標: 找出所有比i小的j所對應的sampleMatrix[i,j]值
+    
+  }
+
+# lowerTriX
+```
+
+#### 12.3 Covariate columns{-}
+
+```{r data123}
+simData <- data.frame(
+  district=rep(LETTERS[1:3], each=3),
+  year=rep(seq(1990, 2000, by=5), 3)
+)
+simData$income <- {
+  sample(2000:10000, 3) -> .i
+  unlist(purrr::map(.i, 
+      ~{
+        .x+sample(-500:500,3)
+      }))
+}
+simData
+```
+
+
+Compute mean income (average across three years) of every district using for-loop and save them in **meanIncomes**. You may adopt the following template:
+```{r ans123, echo=T}
+# 任務前題
+districtSet <- unique(simData$district)
+meanIncomes <- vector("numeric", length(districtSet))
+# 任務目標（縮小版）：找出districtSet[[1]]的（三年）平均所得
+.x <- 1
+meanIncomes[[.x]] <- 
+  
+# meanIncomes
+```
+
+### 13. Loop practices{-}
+
+#### 13.1 Three errors{-}
+
+```{r ans131s}
+## 任務前提
+realPassword <- "2ofe83"
+
+## 一次性任務目標: 接受(flag_continuation為F) 或不接受userInput(flag_continuation為T)
+.x <- 0
+flag_continuation <- T
+
+while(flag_continuation)
+{
+  # iterate generation
+  
+  # for each iterate, you iteration block
+  {
+    userInput <- 
+      readline("Please input your password ")
+
+  }
+  
+  # continuation flag generation (update)
+  
+}
+
+
+```
+
+
+#### 13.2 Password setup{-}
+
+
+```{r ans132s, echo=TRUE}
+.x <- 0
+flag_continuation <- T
+maxIt <- 5
+while(flag_continuation && .x <= maxIt)
+{
+  # iterate generation
+  
+  # iteration block
+  {
+    userInput <- readline("Input your password ")
+    
+    
+  }
+  
+  # continuation flag update (generation)
+  
+  
+}
+```
+
