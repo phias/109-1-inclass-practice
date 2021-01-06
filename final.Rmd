@@ -1,0 +1,221 @@
+---
+title: "Final Exam 前測"
+output: html_document
+---
+
+
+請先執以下code chunk, 引入所需packages，答案禁止引用其他套件（Package）。
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, eval=F)
+library(lubridate); library(jsonlite); library(readr); library(stringr); library(purrr); library(glue)
+```
+
+各小題由難到易分成Level 1-3，同學只需選一個level回答，每個level的滿分不同。三Levels都回答會挑最高的得分計分。
+
+## 1. 選課系統
+
+
+```{r data1}
+jsonlite::fromJSON("/Users/martinl/Dropbox/github-data/courseStructure.json") -> courses
+ansObj11 <- list()
+ansObj12 <- list()
+courses107 <- subset(courses, courses$學年=="107")
+```
+
+### 1.1 應修學系
+
+`courses107$應修系級`的元素值是以"學系"+"年級"+"班別"方式組成，例如，給經濟學系4年級A班的科目會寫成"經濟系4A"，給商學院4年級的科目會寫成"商學院4"，給全校3年級的通識會寫成"通識3"，以此類推。請設計一個**generate_pickFromCategories**函數：
+
+Arguments:
+
+  * source: a character vector.
+  
+  * categories: a character vector. 每個元素值代表一個類別名稱。若有NA, 會被忽略不算一個類別，即`categories=c("A","B",NA)`與`categories=c("A","B")`相同，代表有一類叫"A", 有一類叫"B"。
+  
+  * followByAlnum: a logical value, default=TRUE which means **source**中有文字接英文數字的名詞描述，只要文字部份與**categories**中（去除NA）的任何一個文字相同也要回傳TRUE。如：**source**裡有"中文1"，"中文2A", "中文"，而**categories**裡有"中文", 則在followByAlnum=TRUE下，**source**裡的三個名詞判斷結果都要是TRUE。但當followByAlnum=FALSE下，**source**裡只有"中文"那個名詞才會是TRUE。
+  
+Return: a logical vector，其中TRUE/FALSE要依followByAlnum設定判斷。  
+  * followByAlnum=TRUE時，**source**元值素含有名詞（去除名詞後面的英文及數字後，如"經濟4"會以"經濟"來看待，）符合**categories**中有出現的名詞類別即回傳TRUE，否則回傳FALSE。  
+  * followByAlnum=FALSE時，**source**元值素含有名詞（不去除名詞後面的英文及數字，即"經濟4"與"經濟"會是不同的名詞）符合**categories**中有出現的名詞類別即回傳TRUE，否則回傳FALSE。
+  
+#### level 1 [1]
+
+```{r ans111}
+generate_pickFromCategories <- NULL
+###
+
+
+###
+ansObj11[[1]] <- list(
+  generate_pickFromCategories=generate_pickFromCategories
+)
+```
+
+Example:
+
+```{r, echo=T}
+source <- c("C", "A、B", "A", "B", NA, "D1", "A2、B5", "D2A、A1A", "E2B")
+categories <- c("A", "B", NA, "D")
+generate_pickFromCategories(source, categories)
+# 得到
+#  [1] FALSE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE FALSE
+generate_pickFromCategories(source, categories, followByAlnum = F)
+# 得到
+#  [1] FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE
+```
+
+#### level 2 [0.4]
+
+由下方產生**source2**及**categories2**:
+```{r data112}
+majors <- sample(c("歷史","應外","統計"), 8, replace=T)
+alnums <- paste0(
+  sample(c(as.character(1:4),""), 8, replace=T),
+  sample(c("","A","B"), 8, replace=T)
+)
+source2 <- paste0(majors, alnums)
+source2
+
+n_choose <- sample(1:2,1)
+categories2 <- sample(c("歷史","應外","統計"), n_choose)
+categories2
+```
+
+判斷**source2**的元素值，個別是否有出現**categories2**字眼（有，回傳TRUE； 沒有，回傳FALSE），source元素值請忽略後面的系級（如：3A，4等）。答案存在**pickBasedOnCategories**:
+
+```{r ans112}
+pickBasedOnCategories <- NULL
+###
+
+
+
+###
+ansObj11[[2]] <- 
+  list(
+    pickBasedOnCategories=pickBasedOnCategories 
+  )
+```
+
+#### level 3 [0.35]
+
+由下方產生**source3**:  
+```{r data113}
+majors <- sample(c("歷史","應外","統計"), 30, replace=T)
+alnums <- paste0(
+  sample(c(as.character(1:4),""), 30, replace=T),
+  sample(c("","A","B"), 30, replace=T)
+)
+source3 <- paste0(majors, alnums)
+source3
+flag_exact <- sample(c(T,F),1)
+```
+
+  * **pickExactHistory**: [0.1] 
+  判斷**source3**的元素值是否剛好是"歷史"。是，回傳TRUE; 否，回傳FALSE，存在logical vector **pickExactHistory**.  
+  * **pickHistory**: [0.15] 
+  判斷**source3**的元素值是否有"歷史"兩字眼出現（後面可出現系級）。是，回傳TRUE; 否，回傳FALSE，存在logical vector **pickHistory**.  
+  * **pickByFlag**: [0.1]
+  依**flag_exact**值決定要存在**pickByFlag**的值為**pickExactHistory**或**pickHistory**, **pickByFlag**為TRUE，才選**pickExactHistory**,  反之選**pickHistory**.  
+  
+```{r ans113}
+pickHistory <- NULL
+pickExactHistory <- NULL
+pickByFlag <- NULL
+###
+
+
+
+###
+ansObj11[[3]] <-
+  list(
+    pickHistory=pickHistory,
+    pickExactHistory=pickExactHistory,
+    pickByFlag=pickByFlag
+  )
+```
+
+### 1.2 各年級必選修
+
+請設計**get_coursesFromMajorGradeType**函數，輸入:
+
+  * major_grade: a character vector. 代表所要查詢系級班別，如"經濟系3A"
+  
+  * type: a character vector. 代表所要查詢課程為"必"修或"選"修, 使用者輸入"必"或"選"。如果兩者皆可，則不用設定type. 
+
+Return: 自courses107中留下`應修系級`包含major_grade且其`科目類別（必∕選∕通）`符合type要求的課程資訊。
+
+#### level 1 [1]
+
+```{r ans121}
+get_coursesFromMajorGradeType <- NULL
+###
+
+
+
+###
+ansObj12[[1]] <- list(
+  get_coursesFromMajorGradeType=get_coursesFromMajorGradeType
+)
+```
+
+#### level 2 [0.5]
+
+執行以下程序得到**part1**, **part2**
+```{r data122}
+set.seed(2859)
+names1 <- sample(LETTERS, 20, replace=T)
+names2 <- sample(LETTERS, 20, replace=T)
+names3 <- sample(1:4, 10, replace=T)
+part1 <- paste0(names1, names2, names3, collapse = "、")
+part2 <- paste0(sample(c("B","S"), 20, replace=T), collapse="、")
+part1
+part2
+```
+
+將part1及part2合併成**complete**答案物件，合併前後關係如下:
+```{r}
+# 合併前
+c("A、B")
+c("1、3")
+# 合併後
+c("A1、B3")
+```
+
+```{r ans122}
+complete <- NULL
+###
+
+
+###
+ansObj12[[2]] <-
+  list(
+    complete=complete
+  )
+```
+
+
+#### level 3 [0.35]
+
+將courses107每個科目應修系級拆成vector of characters, course107有42576門科目，所以拆完後是list of 42576，存在**forMajors**物件裡 每個系級是一個元素值。，
+
+  * forMajors: list of 42576 elements, 每個元素值是個character vector。[0.15]
+  
+請計算**forMajors**每個元素值有多少個系級，並存在**n_appliedMajors**。
+
+  * n_appliedMajors: an integer class vector of 42576 elements。[0.2]
+
+```{r ans123}
+forMajors <- NULL
+n_appliedMajors <- NULL
+###
+
+
+###
+ansObj12[[3]] <- list(
+  forMajors=forMajors,
+  n_appliedMajors=n_appliedMajors
+)
+
+```
+
