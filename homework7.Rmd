@@ -41,32 +41,73 @@ jsonlite::fromJSON("https://www.dropbox.com/s/ttw2j7nitc35vfx/palaceMuseumPainti
 
 ```{r}
 get_painting_dynasty <- function(PaintingName){
-  # 輸入畫名，確定有這個畫
+  title <-{
   tr_painting <- purrr::transpose(painting)
   tr_tr_painting <- purrr::transpose(tr_painting$DACatalog)
   tr_painting_Meta <- purrr::transpose(tr_tr_painting$MetaDesc)
-  map_painting_Meta <- purrr::map(tr_painting_Meta,unlist)
-  assertthat::assert_that(PaintingName %in% map_painting_Meta$Title, msg = "There is not this painting.")
-  # 取得畫的朝代
-  stringr::str_extract(map_painting_Meta$Title, pattern = "(?<=[:punct:])[\u4E00-\u9FFF]{1}")
+  unlist(tr_painting_Meta$Title)
+  }
+  # 確定有這個畫
+  assertthat::assert_that(PaintingName %in% title, msg = "There is not this painting.")
+  # 「：」後面是不是接「五」
+  if(str_extract(PaintingName, pattern = "(?<=[:punct:])[\u4E00-\u9FFF]")=="五"){
+    ## 取得「：」後面四個字
+    stringr::str_extract(PaintingName, 
+                         pattern = "(?<=[:punct:])[\u4E00-\u9FFF]{4}")
+  } else 
+  {
+    ## 取得「：」後面第一個字
+    stringr::str_extract(PaintingName, 
+                         pattern = "(?<=[:punct:])[\u4E00-\u9FFF]")
+  }
 }
-
 ```
 
 #### 4.6 Subjects Identification{-}
 
 ```{r}
 get_painting_subjects <- function(PaintingName){
-  
+  tr_painting <- purrr::transpose(painting)
+  tr_tr_painting <- purrr::transpose(tr_painting$DACatalog)
+  tr_painting_Meta <- purrr::transpose(tr_tr_painting$MetaDesc)
+  title <- unlist(tr_painting_Meta$Title)
+  # 確定有這個畫
+  assertthat::assert_that(PaintingName %in% tr_painting_Meta$Title, msg = "There is not this painting.")
+  # 取得作品內容
+  unlist(map2(
+    stringr::str_which(title, pattern = PaintingName),
+    seq(4,17),
+    ~{
+      paste0(
+        str_extract(tr_painting_Meta[[.y]][[.x]], pattern = "(?<=[:punct:])[\u4E00-\u9FFF]+")
+      )
+    }
+  ))
 }
 ```
 
 
 #### 4.7 Special 
-##### 會是4.5、4.5的整合
+
 ```{r}
 get_painting_withDS <- function(PaintingName){
-  
+  title <-{
+  tr_painting <- purrr::transpose(painting)
+  tr_tr_painting <- purrr::transpose(tr_painting$DACatalog)
+  tr_painting_Meta <- purrr::transpose(tr_tr_painting$MetaDesc)
+  unlist(tr_painting_Meta$Title)
+  }
+  which <- str_which(title, pattern = PaintingName)
+  list(
+    "Dynasty" = get_painting_dynasty(PaintingName),
+    "Title" = PaintingName,
+    "Id" = str_extract(
+      painting[[which]][["DACatalog"]][["MetaDesc"]][["Identifier"]],
+      pattern = "(?<=[:punct:])[:graph:]+"
+    ),
+    "Subjects" = get_painting_subjects(PaintingName),
+    "Icon" = painting[[which]][["DACatalog"]][["AdminDesc"]][["ICON"]]
+  )
 }
 ```
 
@@ -74,7 +115,26 @@ get_painting_withDS <- function(PaintingName){
 
 ```{r}
 get_instruction <- function(PaintingName){
-  
+  get_painting_withDS(PaintingName)$Dynasty
+  # 如果是唐朝
+  if (get_painting_withDS(PaintingName)$Dynasty=="唐")
+  {
+    "Please go to 4F"
+  } else
+  # 如果是明朝
+  if(get_painting_withDS(PaintingName)$Dynasty=="明")
+  {
+    "Please go to 3F"
+  } else
+  # 如果是宋朝
+  if(get_painting_withDS(PaintingName)$Dynasty=="宋")
+  {
+    "Please go to 2F"
+  } else
+  {
+    "Please ask our reception"
+  }
+ 
 }
 ```
 
@@ -104,10 +164,126 @@ source("./NTPUmeetCore.R")
 #### 5.3 like
 
 ```{r ans53, echo=T}
+member2like <- members[[sample(1:1000,1)]]
+member2like
+member2like$preference
+currentUser <- members[[582]]
+currentUser
 like <- function(currentUser, member2like){
-
-
-
+det_gender <- function(gender){
+  switch(gender,
+         "男"={
+           if(gender=="男")
+           {
+             addlike <- length(currentUser$likes)+1
+             currentUser$likes[[addlike]] <- member2like$memberID
+           } else {"Sorry the member will not like you."}
+         },
+         "女"={
+           if(gender=="女")
+           {
+             addlike <- length(currentUser$likes)+1
+             currentUser$likes[[addlike]] <- member2like$memberID
+           } else {"Sorry the member will not like you."}
+         },
+         {
+          if(gender=="均可")
+          {
+            addlike <- length(currentUser$likes)+1
+            currentUser$likes[[addlike]] <- member2like$memberID
+          }
+         })
+}
+#不違反preference的情況下，新喜歡的memberID添加到currentUser中的likes
+# 如果符合所有preference，currentUser$likes要可以更新
+## 科系要求
+if(member2like$preference$wantSameMajor)
+{
+  if(str_extract(currentUser$schoolID, pattern = "(?<=[:digit:]{4})[:digit:]{2}")==str_extract(member2like$schoolID, pattern = "(?<=[:digit:]{4})[:digit:]{2}"))
+  {
+    ## 年長要求
+if(member2like$preference$wantSenior)
+  {
+  # 判斷是不是年長
+  if(str_extract(currentUser$schoolID, pattern = "(?<=[:digit:]{1})[:digit:]{3}")>=107)
+  {
+    ## 畢業要求
+    if(currentUser$preference$alreadyGraduatedAllowed)
+    {
+  # 判斷性別要求
+  det_gender(currentUser$gender)
+} else 
+    {
+  if(as.numeric(str_extract(currentUser$schoolID, pattern = "(?<=[:digit:]{1})[:digit:]{3}"))<106)
+  {
+    "Sorry the member will not like you."
+  } else 
+  {
+    det_gender(currentUser$gender)
+  }
+  }
+  } else
+  {
+    "Sorry the member will not like you."
+  }
+} else 
+## 畢業要求
+if(currentUser$preference$alreadyGraduatedAllowed)
+{
+  # 判斷性別要求
+  det_gender(currentUser$gender)
+} else 
+  {
+  if(as.numeric(str_extract(currentUser$schoolID, pattern = "(?<=[:digit:]{1})[:digit:]{3}"))<106){
+    "Sorry the member will not like you."
+  } else {
+    det_gender(currentUser$gender)
+  }
+  }
+  } else {
+    "Sorry the member will not like you."
+  } 
+} else 
+## 年長要求
+if(member2like$preference$wantSenior)
+  {
+  # 判斷是不是年長
+  if(str_extract(currentUser$schoolID, pattern = "(?<=[:digit:]{1})[:digit:]{3}")>=107)
+  {
+    ## 畢業要求
+    if(currentUser$preference$alreadyGraduatedAllowed)
+    {
+  # 判斷性別要求
+  det_gender(currentUser$gender)
+} else 
+    {
+  if(as.numeric(str_extract(currentUser$schoolID, pattern = "(?<=[:digit:]{1})[:digit:]{3}"))<106)
+  {
+    "Sorry the member will not like you."
+  } else 
+  {
+    det_gender(currentUser$gender)
+  }
+  }
+  } else
+  {
+    "Sorry the member will not like you."
+  }
+} else 
+## 畢業要求
+if(currentUser$preference$alreadyGraduatedAllowed)
+{
+  # 判斷性別要求
+  det_gender(currentUser$gender)
+} else 
+{
+  if(as.numeric(str_extract(currentUser$schoolID, pattern = "(?<=[:digit:]{1})[:digit:]{3}"))<106){
+    "Sorry the member will not like you."
+  } else {
+    det_gender(currentUser$gender)
+  }
+  }
+# 沒有符合所有preference則維持原本的currentUser並顯示“Sorry the member will not like you.”
   return(currentUser)
 }
 ```
@@ -119,9 +295,40 @@ like <- function(currentUser, member2like){
 #### 4.9 User interaction
 
 ```{r ans44, echo=F}
+debug(get_special_instruction)
 get_special_instruction <- function(PaintingName){
-  
+  # 計算前十大畫作內容
+  tr_painting_Meta <- {tr_painting <- purrr::transpose(painting)
+    tr_tr_painting <- purrr::transpose(tr_painting$DACatalog)
+    purrr::transpose(tr_tr_painting$MetaDesc)}
+  title_list <-map(tr_painting_Meta$Title,unlist)
+  subjects_list <- purrr::map(
+      seq(4,17),
+      ~{
+        paste0(
+          str_extract(tr_painting_Meta[[.x]], 
+                      pattern = "(?<=[:punct:])[\u4E00-\u9FFF]+")
+      )
+    }
+  )
+  subjects <- factor(unlist(subjects_list))
+  table(subjects) -> count_subjects
+  top10 <- head(sort(count_subjects,decreasing = T), n = 11L)[2:11]
+  names(top10) -> top10_subjects
+  # 有無top10 作畫內容
+  ifelse(
+    any(str_detect(painting[[str_which(title_list, pattern = PaintingName)]], pattern = top10_subjects)),
+    {
+    message("Please visit our building A")
+    get_painting_withDS(PaintingName)
+    },
+    {
+    message("The painting is not belonged to our special exhibition.")
+    get_painting_withDS(PaintingName)
+    })
 }
+get_special_instruction("主要題名：宋夏珪溪山清遠　卷") 
+
 ```
 
 ### 6. Rock-Paper-Scissor{-}
