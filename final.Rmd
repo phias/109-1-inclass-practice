@@ -17,7 +17,7 @@ library(lubridate); library(jsonlite); library(readr); library(stringr); library
 
 
 ```{r data1}
-jsonlite::fromJSON("/Users/martinl/Dropbox/github-data/courseStructure.json") -> courses
+jsonlite::fromJSON("https://www.dropbox.com/s/b3atn1v039dmfqt/courseStructure.json?dl=1") -> courses
 ansObj11 <- list()
 ansObj12 <- list()
 courses107 <- subset(courses, courses$學年=="107")
