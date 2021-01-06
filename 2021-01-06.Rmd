@@ -1,0 +1,19 @@
+---
+title: "課堂練習模版"
+author: "phias"
+date: "2021-01-06"
+output: output_format
+params:
+  id: "410674270"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+
+```{r}
+
+```
+
