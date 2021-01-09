@@ -14,6 +14,39 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Your code
 
 ```{r}
+# computer pick a number
+.computerPick <- {
+  sample(10:50, 1)
+}
 
+# iteration time
+.x <- 0
+flag <- T
+
+while(flag)
+# iteration block
+{
+  # iteration generation
+  .x <- .x + 1
+  
+  # user guess
+  userGuess <- readline("What's your guess?")
+
+  # conditional execution of 3 blocks
+  result <-
+    if (as.integer(userGuess) < .computerPick) {
+      "Higher"
+    } else
+    if (as.integer(userGuess) > .computerPick) {
+      "Lower"
+    } else {
+      glue::glue("BINGO!!! You guess it right after {.x} trials")
+    }
+
+  message(result)
+  
+  # continuation flag
+  flag <- ! stringr::str_detect(result, "BINGO")
+}
 ```
 
