@@ -2,7 +2,7 @@
 title: "homework 8"
 output: html_document
 params:
-  studentName: "劉于寧"
+  studentName: "phias"
   studentID: "410674270"
 ---
 
@@ -45,28 +45,43 @@ sampleMatrix
 
 
 ```{r ans121, echo=T}
+# obtain the diagonal elements
+
 # 任務前提
 n <- dim(sampleMatrix)[[1]]
 diagX <- vector("numeric", n)
 # 任務目標: 縮小任務，只一個i值, 
-i <- 1
+for (i in 1:n) {
+  diagX[[i]] <- sampleMatrix[i,i]
+}
 
-diagX[[i]] <- 
-  
+diagX
+
 # diagX
 ```
 
 #### 12.2 Lower triangular dimension{-}
 
 ```{r ans122, echo=TRUE}
+# extract the lower triangular elements
+# j <= i
+
 # 任務前提
 n <- dim(sampleMatrix)[[1]]
+lowerTriX <- vector("list", n)
 # 任務目標(縮小版): i <- 3，找出所有x_{3j}, where j <= 3
+for (i in 1:n) {
+  diagX[[i]] <- sampleMatrix[1,i]
+}
+
+
+
 i <- 3
 lowerTriX <- vector("list", n)
 lowerTriX[[i]] <- 
   {
     # 任務前提: 給定前面的i
+    
     # 任務目標: 找出所有比i小的j所對應的sampleMatrix[i,j]值
     
   }
