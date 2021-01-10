@@ -70,21 +70,15 @@ diagX
 n <- dim(sampleMatrix)[[1]]
 lowerTriX <- vector("list", n)
 # 任務目標(縮小版): i <- 3，找出所有x_{3j}, where j <= 3
+
 for (i in 1:n) {
-  diagX[[i]] <- sampleMatrix[1,i]
-}
-
-
-
-i <- 3
-lowerTriX <- vector("list", n)
-lowerTriX[[i]] <- 
-  {
-    # 任務前提: 給定前面的i
-    
-    # 任務目標: 找出所有比i小的j所對應的sampleMatrix[i,j]值
-    
+  # 找出所有比i小的j所對應的sampleMatrix[1,j]值，再把需要重複的1代換成i
+  for (j in 1:n) {
+    if(j<=i){
+      lowerTriX[[i]][[j]] <- sampleMatrix[i,j]
+    }
   }
+}
 
 # lowerTriX
 ```
@@ -109,13 +103,26 @@ simData
 
 Compute mean income (average across three years) of every district using for-loop and save them in **meanIncomes**. You may adopt the following template:
 ```{r ans123, echo=T}
+# Compute mean income (average across three years) of every district 
 # 任務前題
 districtSet <- unique(simData$district)
-meanIncomes <- vector("numeric", length(districtSet))
-# 任務目標（縮小版）：找出districtSet[[1]]的（三年）平均所得
-.x <- 1
-meanIncomes[[.x]] <- 
-  
+meanIncomes <- numeric()
+yearSet <- unique(simData$year)
+totalincome <- vector("numeric", length(districtSet))
+
+# 各地區三年平均收入
+for (d in districtSet) {
+  # 單一地區三年平均收入
+  meanIncomes[[d]] <- {
+    #三年總收入
+    for (y in yearSet) {
+      totalincome[[1]] <- totalincome[[1]] + simData$income[which(simData$district==d & simData$year==y)]
+    }
+    # 三年平均收入
+    totalincome[[1]]/length(yearSet)
+  }
+}
+
 # meanIncomes
 ```
 
@@ -134,19 +141,27 @@ flag_continuation <- T
 while(flag_continuation)
 {
   # iterate generation
-  
+  .x <- .x+1 
   # for each iterate, you iteration block
-  {
     userInput <- 
       readline("Please input your password ")
-
-  }
-  
+    result <-
+    # match "Password correct"
+    if(userInput==realPassword){
+      "Password correct"
+    } else
+    # not match "The password is wrong" and go back to ask to input
+    if(userInput!=realPassword && .x<=3){
+      "The password is wrong"
+    } else
+    # 3 times errors "You have input wrongly 3 times!" and exit
+    {
+      stop("You have input wrongly 3 times!")
+    }
+  message(result)
   # continuation flag generation (update)
-  
+  flag_continuation <- !str_detect(result, "correct")
 }
-
-
 ```
 
 
@@ -160,17 +175,24 @@ maxIt <- 5
 while(flag_continuation && .x <= maxIt)
 {
   # iterate generation
-  
+  .x <- .x+1
   # iteration block
-  {
     userInput <- readline("Input your password ")
+    result <- paste0(
+      if(!(is.character(userInput) && str_count(userInput)>=6 && str_count(userInput)<=10))
+      {"password should contain 6-10 characters\n"},
+      if(!str_detect(userInput, "[:digit:]+"))
+      {"Need at least one number\n"},
+      if(!str_detect(userInput, "[:lower:]+"))
+      {"Need at least one small case letter\n"},
+      if(!str_detect(userInput, "[:upper:]+"))
+      {"Need at least one capital letter\n"}
+    )
+    message(result)
     
-    
-  }
   
   # continuation flag update (generation)
-  
-  
+  flag_continuation <- !is_empty(result)
 }
 ```
 
